@@ -10,10 +10,16 @@ public class Jatekosmozgas : MonoBehaviour
 
     private Rigidbody2D rb;  // A játékos Rigidbody2D komponense
 
+    // Reference to the SpriteRenderer component
+    private SpriteRenderer spriteRenderer;
+
     void Start()
     {
         // Kapjuk meg a Rigidbody2D komponenst
         rb = GetComponent<Rigidbody2D>();
+        
+        // Get the SpriteRenderer component to change the sprite
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -36,6 +42,18 @@ public class Jatekosmozgas : MonoBehaviour
 
             // Most már a levegőben van a játékos
             aFoldonVan = false;
+        }
+
+        // Flip the sprite based on movement direction
+        if (vizszintesMozgas > 0)
+        {
+            // Moving right
+            spriteRenderer.flipX = false; // Face right
+        }
+        else if (vizszintesMozgas < 0)
+        {
+            // Moving left
+            spriteRenderer.flipX = true; // Face left
         }
     }
 
