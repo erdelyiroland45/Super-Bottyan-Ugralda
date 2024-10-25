@@ -13,16 +13,18 @@ public class Jatekosmozgas : MonoBehaviour
     // Reference to the SpriteRenderer component
     private SpriteRenderer spriteRenderer;
 
+    // Élet mechanizmus
+    public int lives = 3; // A játékos életei
+
     void Start()
     {
         // Kapjuk meg a Rigidbody2D komponenst
         rb = GetComponent<Rigidbody2D>();
-        
+
         // Get the SpriteRenderer component to change the sprite
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         // A vízszintes mozgás értékének lekérdezése (A/D vagy bal/jobb nyíl)
@@ -48,12 +50,12 @@ public class Jatekosmozgas : MonoBehaviour
         if (vizszintesMozgas > 0)
         {
             // Moving right
-            spriteRenderer.flipX = false; // Face right
+            spriteRenderer.flipX = true; // Face right
         }
         else if (vizszintesMozgas < 0)
         {
             // Moving left
-            spriteRenderer.flipX = true; // Face left
+            spriteRenderer.flipX = false; // Face left
         }
     }
 
@@ -65,5 +67,32 @@ public class Jatekosmozgas : MonoBehaviour
         {
             aFoldonVan = true;
         }
+
+        // Ha a játékos egy ellenséggel ütközik, elveszíti egy életét
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            LoseLife();
+        }
+    }
+
+    // Életvesztés kezelése
+    public void LoseLife()
+    {
+        lives--;
+
+        Debug.Log("Elvesztettél egy életet! Életek: " + lives);
+
+        if (lives <= 0)
+        {
+            GameOver();
+        }
+    }
+
+    // Itt definiálhatod, mi történjen, ha a játékos életei elfogynak
+    void GameOver()
+    {
+        Debug.Log("Game Over!");
+        // Itt adhatod meg a Game Over képernyőt vagy újraindíthatod a játékot
+        // Például: SceneManager.LoadScene("GameOverScene");
     }
 }
