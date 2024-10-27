@@ -9,57 +9,49 @@ public class Jatekosmozgas : MonoBehaviour
     private bool aFoldonVan = true;  // Annak nyilvántartása, hogy a játékos a földön van-e
 
     private Rigidbody2D rb;  // A játékos Rigidbody2D komponense
+    private SpriteRenderer spriteRenderer; // Referencia a SpriteRendererhez
+    private Animator animator; // Referencia az Animatorhoz
 
-    // Reference to the SpriteRenderer component
-    private SpriteRenderer spriteRenderer;
-
-    // Élet mechanizmus
     public int lives = 3; // A játékos életei
 
     void Start()
     {
-        // Kapjuk meg a Rigidbody2D komponenst
         rb = GetComponent<Rigidbody2D>();
-
-        // Get the SpriteRenderer component to change the sprite
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>(); // Kapcsolódik az Animator komponenshez
     }
 
     void Update()
     {
-        // A vízszintes mozgás értékének lekérdezése (A/D vagy bal/jobb nyíl)
+        // A vízszintes és függőleges mozgás értékeinek lekérdezése
         float vizszintesMozgas = Input.GetAxis("Horizontal");  // Jobbra/Balra (A/D vagy bal/jobb nyíl)
+        float fuggolegesMozgas = Input.GetAxis("Vertical"); // Felfelé/Le (W/S vagy fel/le nyíl)
 
-        // Mozgási vektor létrehozása (2D-s mozgás, ezért csak X tengely)
+        // Mozgási vektor létrehozása
         Vector2 mozgasiVektor = new Vector2(vizszintesMozgas * sebesseg, rb.velocity.y);
-
-        // A játékos pozíciójának frissítése (sebesség beállítása)
         rb.velocity = mozgasiVektor;
+
+        // Animáció paraméter beállítása a mozgási sebesség alapján
+        animator.SetFloat("Speed", Mathf.Abs(vizszintesMozgas));
 
         // Ugrás ellenőrzése (ha W vagy fel nyíl lenyomva és a játékos a földön van)
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && aFoldonVan)
         {
-            // Ugrás végrehajtása (vertikális erő hozzáadása a Rigidbody2D-hoz)
             rb.AddForce(new Vector2(0, ugrasEro), ForceMode2D.Impulse);
-
-            // Most már a levegőben van a játékos
             aFoldonVan = false;
         }
 
-        // Flip the sprite based on movement direction
+        // A sprite irányának frissítése a mozgás alapján
         if (vizszintesMozgas > 0)
         {
-            // Moving right
-            spriteRenderer.flipX = true; // Face right
+            spriteRenderer.flipX = false; // Jobbra néz
         }
         else if (vizszintesMozgas < 0)
         {
-            // Moving left
-            spriteRenderer.flipX = false; // Face left
+            spriteRenderer.flipX = true; // Balra néz
         }
     }
 
-    // Ellenőrzés, hogy a játékos a földön van-e (amikor ütközik valamivel, pl. talaj)
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // Ha a játékos ütközik a talajjal, ismét lehet ugrani
@@ -79,7 +71,6 @@ public class Jatekosmozgas : MonoBehaviour
     public void LoseLife()
     {
         lives--;
-
         Debug.Log("Elvesztettél egy életet! Életek: " + lives);
 
         if (lives <= 0)
@@ -88,11 +79,10 @@ public class Jatekosmozgas : MonoBehaviour
         }
     }
 
-    // Itt definiálhatod, mi történjen, ha a játékos életei elfogynak
+    // A játék végét kezelő metódus
     void GameOver()
     {
         Debug.Log("Game Over!");
-        // Itt adhatod meg a Game Over képernyőt vagy újraindíthatod a játékot
-        // Például: SceneManager.LoadScene("GameOverScene");
+        // Itt jelenítheted meg a Game Over képernyőt vagy újraindíthatod a játékot
     }
 }
