@@ -25,36 +25,32 @@ public class Jatekosmozgas : MonoBehaviour
     {
         // A vízszintes és függőleges mozgás értékeinek lekérdezése
         float vizszintesMozgas = Input.GetAxis("Horizontal");  // Jobbra/Balra (A/D vagy bal/jobb nyíl)
-        float fuggolegesMozgas = Input.GetAxis("Vertical"); // Felfelé/Le (W/S vagy fel/le nyíl)
 
-        // Mozgási vektor létrehozása
+        // Mozgási vektor létrehozása a sebesség alapján
         Vector2 mozgasiVektor = new Vector2(vizszintesMozgas * sebesseg, rb.velocity.y);
         rb.velocity = mozgasiVektor;
-
-        // Animáció paraméter beállítása a mozgási sebesség alapján
-        animator.SetFloat("Speed", Mathf.Abs(vizszintesMozgas));
 
         // Ugrás ellenőrzése (ha W vagy fel nyíl lenyomva és a játékos a földön van)
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && aFoldonVan)
         {
-            rb.AddForce(new Vector2(0, ugrasEro), ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * ugrasEro, ForceMode2D.Impulse);
             aFoldonVan = false;
         }
 
         // A sprite irányának frissítése a mozgás alapján
         if (vizszintesMozgas > 0)
         {
-            spriteRenderer.flipX = false; // Jobbra néz
+            spriteRenderer.flipX = true; // Jobbra néz
         }
         else if (vizszintesMozgas < 0)
         {
-            spriteRenderer.flipX = true; // Balra néz
+            spriteRenderer.flipX = false; // Balra néz
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Ha a játékos ütközik a talajjal, ismét lehet ugrani
+        // Ha a játékos ütközik a talajjal (Ground), ismét lehet ugrani
         if (collision.gameObject.CompareTag("Talaj"))
         {
             aFoldonVan = true;
@@ -64,6 +60,15 @@ public class Jatekosmozgas : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             LoseLife();
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        // Ha elhagyja a talajt (Ground), akkor levegőben van
+        if (collision.gameObject.CompareTag("Talaj"))
+        {
+            aFoldonVan = false;
         }
     }
 

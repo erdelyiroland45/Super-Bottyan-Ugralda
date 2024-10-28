@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;  // Include this namespace for SceneManager
 
 public class MainMenu : MonoBehaviour
 {
     public void PlayGame()
     {
-        Application.LoadLevel("SampleScene");
+        // Use SceneManager to load the scene instead of Application.LoadLevel
+        SceneManager.LoadScene("SampleScene");  // Make sure "SampleScene" matches your scene's name
     }
+
     public void QuitGame()
     {
-        Debug.Log("QUIT!");
-        Application.Quit();
+        Debug.Log("QUIT!");  // Log message when quitting
+        Application.Quit();   // Quit the application
     }
 }
