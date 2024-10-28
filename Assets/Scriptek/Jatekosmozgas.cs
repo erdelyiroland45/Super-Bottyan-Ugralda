@@ -30,11 +30,26 @@ public class Jatekosmozgas : MonoBehaviour
         Vector2 mozgasiVektor = new Vector2(vizszintesMozgas * sebesseg, rb.velocity.y);
         rb.velocity = mozgasiVektor;
 
+        // Toggle the Mozog parameter based on whether there is horizontal movement
+        if (vizszintesMozgas != 0)
+        {
+            animator.SetBool("Mozog", true);
+        }
+        else
+        {
+            animator.SetBool("Mozog", false);
+        }
+
         // Ugrás ellenőrzése (ha W vagy fel nyíl lenyomva és a játékos a földön van)
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && aFoldonVan)
         {
             rb.AddForce(Vector2.up * ugrasEro, ForceMode2D.Impulse);
             aFoldonVan = false;
+            animator.SetBool("Ugrik", true);
+        }
+        else if (aFoldonVan)
+        {
+            animator.SetBool("Ugrik", false);
         }
 
         // A sprite irányának frissítése a mozgás alapján
