@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Talaj
   - Enemy
+  - Solid
   layers:
   - Default
   - TransparentFX
@@ -13,8 +14,8 @@ TagManager:
   - Talaj
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - Enemy
   - 
   - 
   - 

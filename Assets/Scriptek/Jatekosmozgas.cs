@@ -1,77 +1,55 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Jatekosmozgas : MonoBehaviour
 {
-    public float sebesseg = 5.0f;  // A játékos mozgási sebessége
-    public float ugrasEro = 7.0f;  // Az ugrás ereje
-    private bool aFoldonVan = true;  // Annak nyilvántartása, hogy a játékos a földön van-e
+    public float sebesseg = 5.0f;  // Player movement speed
+    public float ugrasEro = 7.0f;  // Jump force
+    private bool aFoldonVan = true;  // Tracking if the player is on the ground
 
-    private Rigidbody2D rb;  // A játékos Rigidbody2D komponense
-    private SpriteRenderer spriteRenderer; // Referencia a SpriteRendererhez
-    private Animator animator; // Referencia az Animatorhoz
+    private Rigidbody2D rb;  // The player's Rigidbody2D component
+    private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer
+    private Animator animator; // Reference to the Animator
 
-    public int lives = 3; // A játékos életei
+    public int lives = 3; // Player's lives
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>(); // Kapcsolódik az Animator komponenshez
+        animator = GetComponent<Animator>(); // Connects to the Animator component
     }
 
     void Update()
     {
-        // A vízszintes és függőleges mozgás értékeinek lekérdezése
-        float vizszintesMozgas = Input.GetAxis("Horizontal");  // Jobbra/Balra (A/D vagy bal/jobb nyíl)
+        float vizszintesMozgas = Input.GetAxis("Horizontal");  // Horizontal input (A/D or Arrow keys)
 
-        // Mozgási vektor létrehozása a sebesség alapján
+        // Create movement vector based on speed
         Vector2 mozgasiVektor = new Vector2(vizszintesMozgas * sebesseg, rb.velocity.y);
         rb.velocity = mozgasiVektor;
 
         // Toggle the Mozog parameter based on whether there is horizontal movement
-        if (vizszintesMozgas != 0)
-        {
-            animator.SetBool("Mozog", true);
-        }
-        else
-        {
-            animator.SetBool("Mozog", false);
-        }
+        animator.SetBool("Mozog", vizszintesMozgas != 0);
 
-        // Ugrás ellenőrzése (ha W vagy fel nyíl lenyomva és a játékos a földön van)
+        // Jump check (allow jump if player is on the ground or jumpable object)
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && aFoldonVan)
         {
             rb.AddForce(Vector2.up * ugrasEro, ForceMode2D.Impulse);
-            aFoldonVan = false;
-            animator.SetBool("Ugrik", true);
-        }
-        else if (aFoldonVan)
-        {
-            animator.SetBool("Ugrik", false);
+            aFoldonVan = false; // Set to airborne after jumping
         }
 
-        // A sprite irányának frissítése a mozgás alapján
-        if (vizszintesMozgas > 0)
-        {
-            spriteRenderer.flipX = true; // Jobbra néz
-        }
-        else if (vizszintesMozgas < 0)
-        {
-            spriteRenderer.flipX = false; // Balra néz
-        }
+        // Update sprite direction based on movement
+        spriteRenderer.flipX = vizszintesMozgas > 0; // Flip sprite based on direction
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Ha a játékos ütközik a talajjal (Ground), ismét lehet ugrani
-        if (collision.gameObject.CompareTag("Talaj"))
+        // Check if the player collides with the ground or jumpable object
+        if (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("Solid"))
         {
-            aFoldonVan = true;
+            aFoldonVan = true; // Allow jumping
         }
 
-        // Ha a játékos egy ellenséggel ütközik, elveszíti egy életét
+        // Handle collision with enemies
         if (collision.gameObject.CompareTag("Enemy"))
         {
             LoseLife();
@@ -80,29 +58,39 @@ public class Jatekosmozgas : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        // Ha elhagyja a talajt (Ground), akkor levegőben van
-        if (collision.gameObject.CompareTag("Talaj"))
+        // If leaving the ground or jumpable object, mark as airborne
+        if (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("Solid"))
         {
             aFoldonVan = false;
         }
     }
 
-    // Életvesztés kezelése
+    // Handle losing life
     public void LoseLife()
     {
         lives--;
         Debug.Log("Elvesztettél egy életet! Életek: " + lives);
-
         if (lives <= 0)
         {
             GameOver();
         }
     }
 
-    // A játék végét kezelő metódus
+    // Handle game over scenario
     void GameOver()
     {
         Debug.Log("Game Over!");
-        // Itt jelenítheted meg a Game Over képernyőt vagy újraindíthatod a játékot
+        // Show Game Over screen or restart the game here
+    }
+
+    // Method to receive damage
+    public void Sebzodes(float amount)
+    {
+        lives -= (int)amount; // Assuming sebzodes is always a whole number
+        Debug.Log("Player took damage: " + amount);
+        if (lives <= 0)
+        {
+            GameOver();
+        }
     }
 }

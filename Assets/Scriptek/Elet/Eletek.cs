@@ -4,36 +4,53 @@ using UnityEngine;
 
 public class Eletek : MonoBehaviour
 {
+    [Header("Elet")]
     [SerializeField] private float maxElet = 10f;  // Max health
     public float Jelenlegielet { get; private set; }  // Current health
+
+    [HideInInspector] [SerializeField] private float iframesduration = 0.2f; // Non-editable invincibility duration
+    [HideInInspector] [SerializeField] private int pirosanvillogas = 1; // Non-editable number of invincibility flashes
+    private SpriteRenderer spriteRenderer;
+
+    private bool isDead = false; // Flag to check if the player is dead
+    private bool dead = false; // Flag to check if the player is dead
 
     private void Awake()
     {
         Jelenlegielet = maxElet;  // Initialize current health to max health
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     public void Sebzodes(float sebzes)
     {
         Jelenlegielet = Mathf.Clamp(Jelenlegielet - sebzes, 0, maxElet);
-        Debug.Log($"Current Health: {Jelenlegielet}"); // Log the current health
 
         if (Jelenlegielet > 0)
         {
-            // Player is still alive
-            Debug.Log("Player is alive");
+            StartCoroutine(Sebezhetetlenseg());
         }
         else
         {
-            // Player is dead, add death handling logic here
-            Debug.Log("Player is dead");
+            if (!isDead && !dead)
+            {
+                GetComponent<Jatekosmozgas>().enabled = false; // Disable player movement
+                isDead = true;
+                dead = true;
+                // Additional game over logic can go here
+            }
         }
     }
 
-    private void Update()
+    private IEnumerator Sebezhetetlenseg()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        Physics2D.IgnoreLayerCollision(6, 7, true); // Disable collision with the enemy layer
+        for (int i = 0; i < pirosanvillogas; i++)
         {
-            Sebzodes(1);  // Reduces health by 1 each time E is pressed
+            spriteRenderer.color = new Color(1, 0, 0, 0.5f); // Flash red
+            yield return new WaitForSeconds(iframesduration); // Wait for the duration
+            spriteRenderer.color = Color.white; // Reset color
+            yield return new WaitForSeconds(iframesduration); // Wait before flashing again
         }
+        Physics2D.IgnoreLayerCollision(6, 7, false); // Re-enable collision
     }
 }
