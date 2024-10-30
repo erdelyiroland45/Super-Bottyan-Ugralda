@@ -8,8 +8,8 @@ public class Eletek : MonoBehaviour
     [SerializeField] private float maxElet = 10f;  // Max health
     public float Jelenlegielet { get; private set; }  // Current health
 
-    [HideInInspector] [SerializeField] private float iframesduration = 0.2f; // Non-editable invincibility duration
-    [HideInInspector] [SerializeField] private int pirosanvillogas = 1; // Non-editable number of invincibility flashes
+    [HideInInspector][SerializeField] private float iframesduration = 0.2f; // Invincibility duration
+    [HideInInspector][SerializeField] private int pirosanvillogas = 1; // Number of invincibility flashes
     private SpriteRenderer spriteRenderer;
 
     private bool isDead = false; // Flag to check if the player is dead
@@ -19,6 +19,15 @@ public class Eletek : MonoBehaviour
     {
         Jelenlegielet = maxElet;  // Initialize current health to max health
         spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // Check if the collision is with an enemy
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Sebzodes(1f); // Apply damage (1 as an example, adjust as needed)
+        }
     }
 
     public void Sebzodes(float sebzes)

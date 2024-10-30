@@ -82,15 +82,4 @@ public class Jatekosmozgas : MonoBehaviour
         Debug.Log("Game Over!");
         // Show Game Over screen or restart the game here
     }
-
-    // Method to receive damage
-    public void Sebzodes(float amount)
-    {
-        lives -= (int)amount; // Assuming sebzodes is always a whole number
-        Debug.Log("Player took damage: " + amount);
-        if (lives <= 0)
-        {
-            GameOver();
-        }
-    }
 }
