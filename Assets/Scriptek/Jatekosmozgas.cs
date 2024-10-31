@@ -38,7 +38,10 @@ public class Jatekosmozgas : MonoBehaviour
         }
 
         // Update sprite direction based on movement
-        spriteRenderer.flipX = vizszintesMozgas > 0; // Flip sprite based on direction
+        if (vizszintesMozgas != 0)
+        {
+            spriteRenderer.flipX = vizszintesMozgas > 0; // Flip sprite to the right when moving right, left when moving left
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
