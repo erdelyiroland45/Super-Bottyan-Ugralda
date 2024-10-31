@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class bolt : MonoBehaviour
+public class Bolt : MonoBehaviour
 {
-    public static bool Bolt = false;
+    public static bool BoltActive = false;
     public GameObject ShopsUI;
 
-    void Update ()
+    void OnTriggerEnter(Collider other)
     {
-        if (collision.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            if (Bolt)
+            if (BoltActive)
             {
                 Vissza();
             }
@@ -26,12 +26,13 @@ public class bolt : MonoBehaviour
     {
         ShopsUI.SetActive(false);
         Time.timeScale = 1f;
-        Bolt = false;
+        BoltActive = false;
     }
+
     void Pause() 
     {
         ShopsUI.SetActive(true);
         Time.timeScale = 0f;
-        Bolt = true;
+        BoltActive = true;
     }
 }
