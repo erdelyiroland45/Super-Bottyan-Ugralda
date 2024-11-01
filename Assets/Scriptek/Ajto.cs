@@ -4,9 +4,10 @@ public class Ajto : MonoBehaviour
 {
     [SerializeField] private Sprite nyitottAjtoSprite;  // Open door sprite
     [SerializeField] private Sprite csukottAjtoSprite;  // Closed door sprite
-    [SerializeField] private GameObject enemyPrefab;     // Enemy prefab to spawn
-    [SerializeField] private Transform spawnPoint;       // Spawn location for the enemy
-    [SerializeField] private float spawnEsely = 0.25f;   // Spawn chance (25%)
+    [SerializeField] private GameObject enemyPrefab1;   // First enemy prefab to spawn
+    [SerializeField] private GameObject enemyPrefab2;   // Second enemy prefab to spawn
+    [SerializeField] private Transform spawnPoint;      // Spawn location for the enemy
+    [SerializeField] private float spawnEsely = 0.25f;  // Spawn chance (25%)
 
     private SpriteRenderer spriteRenderer; // Sprite Renderer for the door
     private bool nyitva = false; // Tracks whether the door is open
@@ -36,28 +37,30 @@ public class Ajto : MonoBehaviour
         // Check spawn chance
         if (Random.value < spawnEsely)
         {
-            SpawnEnemy();
+            // 50-50 chance to spawn either enemyPrefab1 or enemyPrefab2
+            SpawnRandomEnemy();
         }
     }
 
-    private void SpawnEnemy()
+    private void SpawnRandomEnemy()
     {
-        // Debug log for enemy spawning
-        Debug.Log("Attempting to spawn enemy.");
-
-        if (enemyPrefab != null && spawnPoint != null)
+        // Check if both enemy prefabs and the spawn point are set
+        if (spawnPoint != null)
         {
-            Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
-            Debug.Log("Enemy spawned successfully.");
+            GameObject chosenEnemy = Random.value < 0.5f ? enemyPrefab1 : enemyPrefab2;
+            if (chosenEnemy != null)
+            {
+                Instantiate(chosenEnemy, spawnPoint.position, spawnPoint.rotation);
+                Debug.Log("Enemy spawned successfully: " + chosenEnemy.name);
+            }
+            else
+            {
+                Debug.LogWarning("One of the enemy prefabs is missing.");
+            }
         }
         else
         {
-            Debug.LogWarning("Missing enemyPrefab or spawnPoint.");
+            Debug.LogWarning("Missing spawnPoint.");
         }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        // Removed sprite reset to keep the door open
     }
 }

@@ -27,21 +27,29 @@ public class Jatekosmozgas : MonoBehaviour
         Vector2 mozgasiVektor = new Vector2(vizszintesMozgas * sebesseg, rb.velocity.y);
         rb.velocity = mozgasiVektor;
 
-        // Toggle the Mozog parameter based on whether there is horizontal movement
-        animator.SetBool("Mozog", vizszintesMozgas != 0);
-
-        // Jump check (allow jump if player is on the ground or jumpable object)
+        // Check for jump input
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && aFoldonVan)
         {
-            rb.AddForce(Vector2.up * ugrasEro, ForceMode2D.Impulse);
-            aFoldonVan = false; // Set to airborne after jumping
+            Jump();
         }
 
         // Update sprite direction based on movement
-        if (vizszintesMozgas != 0)
+        if (vizszintesMozgas != 0 && aFoldonVan) // Only flip sprite if on the ground
         {
             spriteRenderer.flipX = vizszintesMozgas > 0; // Flip sprite to the right when moving right, left when moving left
         }
+
+        // Update animator parameters
+        animator.SetBool("Mozog", vizszintesMozgas != 0 && aFoldonVan); // Only moving if on ground
+    }
+
+    private void Jump()
+    {
+        rb.AddForce(Vector2.up * ugrasEro, ForceMode2D.Impulse);
+        aFoldonVan = false; // Set to airborne after jumping
+
+        // Set the Ugrik parameter to true for the jump animation
+        animator.SetBool("Ugrik", true);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -50,6 +58,9 @@ public class Jatekosmozgas : MonoBehaviour
         if (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("Solid"))
         {
             aFoldonVan = true; // Allow jumping
+
+            // Set the Ugrik parameter to false to switch back to idle or running
+            animator.SetBool("Ugrik", false);
         }
 
         // Handle collision with enemies

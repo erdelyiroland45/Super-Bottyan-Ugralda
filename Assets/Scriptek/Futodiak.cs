@@ -2,10 +2,8 @@ using UnityEngine;
 
 public class Futodiak : MonoBehaviour
 {
-    [SerializeField] private float sebzodes; // Damage amount to be applied to the player
+    [SerializeField] private float sebzodes = 1f; // Damage amount to be applied to the player
     [SerializeField] private float speed = 3.0f; // Speed of the enemy movement
-    [SerializeField] private Animator animator; // Reference to the Animator component
-
     private Rigidbody2D rb; // Reference to the Rigidbody2D component
     private Camera mainCamera; // Reference to the main camera
 
@@ -14,35 +12,26 @@ public class Futodiak : MonoBehaviour
         // Get the Rigidbody2D component attached to this GameObject
         rb = GetComponent<Rigidbody2D>();
         mainCamera = Camera.main; // Get the main camera
-
-        // Enable physics and start the animation
-        rb.isKinematic = false; 
-        animator.SetBool("isMoving", true);
     }
 
     private void Update()
     {
-        // Move the enemy
-        MoveEnemy();
+        // Move the enemy to the left continuously
+        rb.velocity = new Vector2(-speed, rb.velocity.y);
 
-        // Check if the enemy is out of the left side of the camera
+        // Check if the enemy has moved off the left side of the camera view
         if (IsOutOfCameraView())
         {
-            Destroy(gameObject); // Destroy the enemy if it's out of the camera view
+            Destroy(gameObject); // Despawn the enemy if it's outside the camera view
         }
-    }
-
-    private void MoveEnemy()
-    {
-        // Set the velocity to move left while allowing gravity to affect it
-        rb.velocity = new Vector2(-speed, rb.velocity.y);
     }
 
     private bool IsOutOfCameraView()
     {
-        // Get the screen bounds
+        // Get the enemy's position in screen coordinates
         Vector3 screenPoint = mainCamera.WorldToViewportPoint(transform.position);
-        return screenPoint.x < 0; // Returns true if the enemy is outside the left side of the camera
+        // Check if the enemy is outside the left side of the screen (viewport x < 0)
+        return screenPoint.x < 0;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
