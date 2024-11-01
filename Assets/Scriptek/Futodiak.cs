@@ -8,7 +8,6 @@ public class Futodiak : MonoBehaviour
 
     private Rigidbody2D rb; // Reference to the Rigidbody2D component
     private Camera mainCamera; // Reference to the main camera
-    private bool isMoving = false; // Flag to check if the enemy is moving
 
     private void Start()
     {
@@ -16,47 +15,20 @@ public class Futodiak : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         mainCamera = Camera.main; // Get the main camera
 
-        // Check if the enemy is initially within the camera view
-        if (IsWithinCameraView())
-        {
-            isMoving = true; // Start moving if it is already in view
-            animator.SetBool("isMoving", true); // Start the animation
-        }
-        else
-        {
-            // Disable the Rigidbody2D to prevent immediate movement
-            rb.isKinematic = true; 
-        }
+        // Enable physics and start the animation
+        rb.isKinematic = false; 
+        animator.SetBool("isMoving", true);
     }
 
     private void Update()
     {
-        // If the enemy is not moving, check if it is now within the camera view
-        if (!isMoving)
-        {
-            if (IsWithinCameraView())
-            {
-                isMoving = true; // Start moving when it enters the camera view
-                rb.isKinematic = false; // Re-enable physics
-                animator.SetBool("isMoving", true); // Start the animation
-            }
-            else
-            {
-                // If it is still out of view, we do nothing
-                return;
-            }
-        }
+        // Move the enemy
+        MoveEnemy();
 
-        // Move the enemy if the flag is set
-        if (isMoving)
+        // Check if the enemy is out of the left side of the camera
+        if (IsOutOfCameraView())
         {
-            MoveEnemy();
-        }
-
-        // If the enemy is out of the camera view, destroy it
-        if (!IsWithinCameraView())
-        {
-            Destroy(gameObject);
+            Destroy(gameObject); // Destroy the enemy if it's out of the camera view
         }
     }
 
@@ -66,12 +38,11 @@ public class Futodiak : MonoBehaviour
         rb.velocity = new Vector2(-speed, rb.velocity.y);
     }
 
-    private bool IsWithinCameraView()
+    private bool IsOutOfCameraView()
     {
         // Get the screen bounds
         Vector3 screenPoint = mainCamera.WorldToViewportPoint(transform.position);
-        return (screenPoint.x >= 0 && screenPoint.x <= 1 && 
-                screenPoint.y >= 0 && screenPoint.y <= 1);
+        return screenPoint.x < 0; // Returns true if the enemy is outside the left side of the camera
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
