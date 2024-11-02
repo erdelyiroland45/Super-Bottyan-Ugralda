@@ -1,37 +1,52 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Eletek : MonoBehaviour
 {
-    [Header("Elet")]
+    [Header("Élet")]
     [SerializeField] private float maxElet = 10f;  // Max health
     public float Jelenlegielet { get; private set; }  // Current health
 
     [HideInInspector][SerializeField] private float iframesduration = 0.2f; // Invincibility duration
     [HideInInspector][SerializeField] private int pirosanvillogas = 1; // Number of invincibility flashes
     private SpriteRenderer spriteRenderer;
+    private Animator animator; // Reference to the Animator component
 
     private bool isDead = false; // Flag to check if the player is dead
-    private bool dead = false; // Flag to check if the player is dead
+    private bool invulnerable = false; // Flag to check if the player is invulnerable
 
     private void Awake()
     {
         Jelenlegielet = maxElet;  // Initialize current health to max health
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>(); // Connects to the Animator component
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Check if the collision is with an enemy
-        if (collision.gameObject.CompareTag("Enemy"))
+        // Check if the collision is with an enemy and the player is alive
+        if (collision.gameObject.CompareTag("Enemy") && !isDead)
         {
             Sebzodes(1f); // Apply damage (1 as an example, adjust as needed)
+        }
+
+        // Allow collision with ground or solid objects even if dead
+        if (isDead && (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("Solid")))
+        {
+            return; // Allow these collisions
+        }
+
+        // If the player is dead, ignore all other collisions
+        if (isDead)
+        {
+            Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collision.collider, true); // Ignore collision with everything else
         }
     }
 
     public void Sebzodes(float sebzes)
     {
+        if (isDead || invulnerable) return; // If dead or invulnerable, don't take damage
+
         Jelenlegielet = Mathf.Clamp(Jelenlegielet - sebzes, 0, maxElet);
 
         if (Jelenlegielet > 0)
@@ -40,18 +55,29 @@ public class Eletek : MonoBehaviour
         }
         else
         {
-            if (!isDead && !dead)
-            {
-                GetComponent<Jatekosmozgas>().enabled = false; // Disable player movement
-                isDead = true;
-                dead = true;
-                // Additional game over logic can go here
-            }
+            Die(); // Call the die function
         }
+    }
+
+    private void Die()
+    {
+        isDead = true;
+
+        // Disable player movement
+        GetComponent<Jatekosmozgas>().enabled = false; 
+
+        // Play death animation
+        animator.SetBool("Halott", true); 
+
+        // Ignore collisions with enemies
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Enemy"), true); // Ignore collisions with enemies
+
+        // You may want to handle game over logic here, like showing a game over screen or restarting the game
     }
 
     private IEnumerator Sebezhetetlenseg()
     {
+        invulnerable = true; // Set invulnerable to true
         Physics2D.IgnoreLayerCollision(6, 7, true); // Disable collision with the enemy layer
         for (int i = 0; i < pirosanvillogas; i++)
         {
@@ -61,5 +87,7 @@ public class Eletek : MonoBehaviour
             yield return new WaitForSeconds(iframesduration); // Wait before flashing again
         }
         Physics2D.IgnoreLayerCollision(6, 7, false); // Re-enable collision
+        yield return new WaitForSeconds(1f); // Adjust the invulnerability duration
+        invulnerable = false; // Reset invulnerability
     }
 }

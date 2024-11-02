@@ -5,22 +5,24 @@ public class Jatekosmozgas : MonoBehaviour
     public float sebesseg = 5.0f;  // Player movement speed
     public float ugrasEro = 7.0f;  // Jump force
     private bool aFoldonVan = true;  // Tracking if the player is on the ground
+    private bool isDead = false;  // Track if the player is dead
 
     private Rigidbody2D rb;  // The player's Rigidbody2D component
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer
     private Animator animator; // Reference to the Animator
-
-    public int lives = 3; // Player's lives
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>(); // Connects to the Animator component
+        animator.SetBool("Halott", false);
     }
 
     void Update()
     {
+        if (isDead) return; // Stop all input if dead
+
         float vizszintesMozgas = Input.GetAxis("Horizontal");  // Horizontal input (A/D or Arrow keys)
 
         // Create movement vector based on speed
@@ -62,11 +64,21 @@ public class Jatekosmozgas : MonoBehaviour
             // Set the Ugrik parameter to false to switch back to idle or running
             animator.SetBool("Ugrik", false);
         }
+        else if (collision.gameObject.CompareTag("Player"))
+        {
+            // Optionally handle player interactions here if needed
+        }
+        else
+        {
+            // Ignore all other collisions
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
+        }
 
         // Handle collision with enemies
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            LoseLife();
+            // Call the damage method from Eletek class when colliding with an enemy
+            GetComponent<Eletek>().Sebzodes(1f); // Call the damage method from Eletek class
         }
     }
 
@@ -79,21 +91,14 @@ public class Jatekosmozgas : MonoBehaviour
         }
     }
 
-    // Handle losing life
-    public void LoseLife()
-    {
-        lives--;
-        Debug.Log("Elvesztettél egy életet! Életek: " + lives);
-        if (lives <= 0)
-        {
-            GameOver();
-        }
-    }
-
     // Handle game over scenario
     void GameOver()
     {
+        if (isDead) return; // Prevent repeated calls to GameOver
+
         Debug.Log("Game Over!");
-        // Show Game Over screen or restart the game here
+        animator.SetBool("Halott", true); // Trigger death animation
+        isDead = true; // Set dead flag
+        rb.velocity = Vector2.zero; // Stop player movement
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemySebzes : MonoBehaviour
 {
-    [SerializeField] private float damageAmount = 10f; // Amount of damage the enemy deals to the player
+    [SerializeField] private float damageAmount = 1f; // Amount of damage the enemy deals to the player
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
