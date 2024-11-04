@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
+        [SerializeField] private float sebzodes = 1f;
     private Collider2D projectileCollider; // Store the projectile's collider
+
 
     void Start()
     {
@@ -24,6 +26,19 @@ public class Projectile : MonoBehaviour
     void Update()
     {
         // Add any projectile movement logic here if needed
+    }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            Eletek playerHealth = collision.GetComponent<Eletek>();
+            if (playerHealth != null)
+            {
+                playerHealth.Sebzodes(sebzodes); // Sebzés okozása a játékosnak
+                Debug.Log("Damage dealt to player: " + sebzodes);
+            }
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

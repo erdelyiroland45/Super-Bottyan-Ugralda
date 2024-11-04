@@ -36,7 +36,7 @@ public class Jatekosmozgas : MonoBehaviour
         }
 
         // Update sprite direction based on movement
-        if (vizszintesMozgas != 0 && aFoldonVan) // Only flip sprite if on the ground
+        if (vizszintesMozgas != 0) // Flip sprite regardless of ground status for jumping
         {
             spriteRenderer.flipX = vizszintesMozgas > 0; // Flip sprite to the right when moving right, left when moving left
         }

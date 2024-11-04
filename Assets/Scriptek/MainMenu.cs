@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         // Use SceneManager to load the scene instead of Application.LoadLevel
-        SceneManager.LoadScene("SampleScene");  // Make sure "SampleScene" matches your scene's name
+        SceneManager.LoadScene("M_Epulet");  // Make sure "SampleScene" matches your scene's name
     }
 
     public void QuitGame()

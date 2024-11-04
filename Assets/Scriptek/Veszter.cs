@@ -14,6 +14,7 @@ public class Veszter : MonoBehaviour
     [SerializeField] private GameObject projectilePrefab; // Prefab a projektilhoz
     [SerializeField] private float projectileLaunchForce = 5f; // Erő, amivel a projektilt kilövik
     [SerializeField] private float projectileInterval = 2f; // Időköz a projektilok kilövése között
+    [SerializeField] private Portalkezelo portalManager; // Hivatkozás a Portalkezelo-ra
 
     private Coroutine filamentSpawnCoroutine;      // Hivatkozás a filamentek spawnolásáért felelős coroutine-ra
     private Coroutine projectileSpawnCoroutine;     // Hivatkozás a projektilok spawnolásáért felelős coroutine-ra
@@ -25,29 +26,17 @@ public class Veszter : MonoBehaviour
 
     private void Start()
     {
-        // Nincs kezdeti spawnolás
         filamentSpawnCoroutine = null;
         projectileSpawnCoroutine = null; // Initial null for coroutine tracking
         
-        // Hide health bar initially
         if (healthBar != null)
         {
-            healthBar.gameObject.SetActive(false);
-        }
-    }
-
-    private void Update()
-    {
-        // Only allow actions if Veszter is visible
-        if (isVisible)
-        {
-            // Any logic that should only happen when visible can go here
+            healthBar.gameObject.SetActive(false); // Hide health bar initially
         }
     }
 
     private void OnBecameVisible()
     {
-        // When Veszter becomes visible, start the coroutines and show the health bar
         isVisible = true;
         if (healthBar != null)
         {
@@ -66,7 +55,6 @@ public class Veszter : MonoBehaviour
 
     private void OnBecameInvisible()
     {
-        // When Veszter becomes invisible, stop the coroutines and hide the health bar
         isVisible = false;
         if (healthBar != null)
         {
@@ -133,6 +121,12 @@ public class Veszter : MonoBehaviour
                 healthBar.gameObject.SetActive(false); // Elrejtjük az életerő csíkot
             }
             StopCoroutines();
+
+            // Activate portal when Veszter is defeated
+            if (portalManager != null)
+            {
+                portalManager.ActivatePortal();
+            }
         }
     }
 
@@ -188,15 +182,19 @@ public class Veszter : MonoBehaviour
         {
             GameObject projectile = Instantiate(projectilePrefab, filamentdobáshely.position, filamentdobáshely.rotation);
             Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+
             if (rb != null)
             {
-                float randomXOffset = Random.Range(-0.5f, -1.0f);
-                float randomYOffset = Random.Range(0.5f, 1.0f);
+                float angle = Random.Range(45f, 75f);
+                float angleInRadians = angle * Mathf.Deg2Rad;
 
-                Vector2 launchDirection = new Vector2(randomXOffset, randomYOffset).normalized;
+                float xComponent = -Mathf.Cos(angleInRadians);
+                float yComponent = Mathf.Sin(angleInRadians);
+                Vector2 launchDirection = new Vector2(xComponent, yComponent).normalized;
+
                 rb.AddForce(launchDirection * projectileLaunchForce, ForceMode2D.Impulse);
+                Debug.Log($"Projectile launched left at angle: {angle} degrees.");
             }
-            Debug.Log("Projectile launched with random direction.");
         }
         else
         {
