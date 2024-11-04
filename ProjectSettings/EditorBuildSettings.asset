@@ -9,6 +9,12 @@ EditorBuildSettings:
     path: Assets/Palyak/Menu.unity
     guid: 24660cddf5d70464e8785fcaff9c74e3
   - enabled: 1
-    path: Assets/Palyak/SampleScene.unity
+    path: Assets/Palyak/M_Epulet.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Palyak/A_Epulet.unity
+    guid: 1519d4ead3f0b1444a1eee5942707037
+  - enabled: 1
+    path: Assets/Palyak/B_Epulet.unity
+    guid: 7df56a8178313a1419b4406e61f13ed3
   m_configObjects: {}
