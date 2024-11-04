@@ -64,15 +64,6 @@ public class Jatekosmozgas : MonoBehaviour
             // Set the Ugrik parameter to false to switch back to idle or running
             animator.SetBool("Ugrik", false);
         }
-        else if (collision.gameObject.CompareTag("Player"))
-        {
-            // Optionally handle player interactions here if needed
-        }
-        else
-        {
-            // Ignore all other collisions
-            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>(), true);
-        }
 
         // Handle collision with enemies
         if (collision.gameObject.CompareTag("Enemy"))

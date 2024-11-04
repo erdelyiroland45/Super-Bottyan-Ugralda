@@ -1143,16 +1143,12 @@ MonoBehaviour:
   sebzodes: 1
   headDamage: 1
   healthBar: {fileID: 727142884}
-  filamentPrefabs:
-  - {fileID: 3336119287467357195, guid: 4456be0ca1eb6f24a8b3ab70bae628b1, type: 3}
-  - {fileID: 3053050640701512866, guid: 1be14271a027e8848889eb5399cd69f4, type: 3}
-  - {fileID: 1013522602465136481, guid: c77619f1a781efb4bbfe9295dc7bfe1e, type: 3}
-  - {fileID: 3346732829739115682, guid: 0782b1000cb1e1f429bc97185d660516, type: 3}
+  filamentPrefabs: []
   spawnPoint: {fileID: 1716728850}
-  "filamentdob\xE1shely": {fileID: 2081083221}
-  spawnDelay: 2
-  projectilePrefab: {fileID: 6826027510551423697, guid: 071310d5e2108874a93db1bed8d5096a, type: 3}
-  projectileLaunchForce: 10
+  "filamentdob\xE1shely": {fileID: 0}
+  spawnDelay: 3
+  projectilePrefab: {fileID: 0}
+  projectileLaunchForce: 5
   projectileInterval: 2
 --- !u!61 &574595043
 BoxCollider2D:
@@ -4078,7 +4074,7 @@ Transform:
   m_GameObject: {fileID: 2081083220}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.091, y: -0.152, z: -0.0319614}
+  m_LocalPosition: {x: -0.049, y: -0.22, z: -0.0319614}
   m_LocalScale: {x: 0.38551855, y: 0.38551855, z: 0.38551855}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4094,11 +4090,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1397223874980396640, guid: 127ca441d2f0d0f4b92e0e2e35170ed7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -17.8
+      value: -15.42
       objectReference: {fileID: 0}
     - target: {fileID: 1397223874980396640, guid: 127ca441d2f0d0f4b92e0e2e35170ed7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.85
+      value: -8.52
       objectReference: {fileID: 0}
     - target: {fileID: 1397223874980396640, guid: 127ca441d2f0d0f4b92e0e2e35170ed7, type: 3}
       propertyPath: m_LocalPosition.z

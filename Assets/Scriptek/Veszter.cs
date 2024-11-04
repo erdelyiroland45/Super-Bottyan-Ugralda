@@ -28,6 +28,12 @@ public class Veszter : MonoBehaviour
         // Nincs kezdeti spawnolás
         filamentSpawnCoroutine = null;
         projectileSpawnCoroutine = null; // Initial null for coroutine tracking
+        
+        // Hide health bar initially
+        if (healthBar != null)
+        {
+            healthBar.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
@@ -41,8 +47,13 @@ public class Veszter : MonoBehaviour
 
     private void OnBecameVisible()
     {
-        // When Veszter becomes visible, start the coroutines
+        // When Veszter becomes visible, start the coroutines and show the health bar
         isVisible = true;
+        if (healthBar != null)
+        {
+            healthBar.gameObject.SetActive(true); // Show health bar when visible
+        }
+        
         if (filamentPrefabs.Length > 0 && filamentSpawnCoroutine == null)
         {
             filamentSpawnCoroutine = StartCoroutine(SpawnFilamentCoroutine());
@@ -55,18 +66,14 @@ public class Veszter : MonoBehaviour
 
     private void OnBecameInvisible()
     {
-        // When Veszter becomes invisible, stop the coroutines
+        // When Veszter becomes invisible, stop the coroutines and hide the health bar
         isVisible = false;
-        if (filamentSpawnCoroutine != null)
+        if (healthBar != null)
         {
-            StopCoroutine(filamentSpawnCoroutine);
-            filamentSpawnCoroutine = null;
+            healthBar.gameObject.SetActive(false); // Hide health bar when not visible
         }
-        if (projectileSpawnCoroutine != null)
-        {
-            StopCoroutine(projectileSpawnCoroutine);
-            projectileSpawnCoroutine = null;
-        }
+        
+        StopCoroutines();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
