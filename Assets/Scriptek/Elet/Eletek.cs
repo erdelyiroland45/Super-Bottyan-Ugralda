@@ -43,6 +43,17 @@ public class Eletek : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+        // Check if the collision is with a "Elet" object (heart)
+        if (collision.gameObject.CompareTag("Elet"))
+        {
+            IncreaseHealth(1f);  // Increase health (adjust as needed)
+            Destroy(collision.gameObject);  // Destroy the heart object
+        }
+    }
+
     public void Sebzodes(float sebzes)
     {
         if (isDead || invulnerable) return; // If dead or invulnerable, don't take damage
@@ -89,5 +100,12 @@ public class Eletek : MonoBehaviour
         Physics2D.IgnoreLayerCollision(6, 7, false); // Re-enable collision
         yield return new WaitForSeconds(1f); // Adjust the invulnerability duration
         invulnerable = false; // Reset invulnerability
+    }
+
+    private void IncreaseHealth(float amount)
+    {
+        // Increase health by the specified amount, ensuring it doesn't exceed max health
+        Jelenlegielet = Mathf.Clamp(Jelenlegielet + amount, 0, maxElet);
+        Debug.Log("Health increased! Current health: " + Jelenlegielet);
     }
 }

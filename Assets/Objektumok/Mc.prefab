@@ -146,7 +146,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 7363596677352629621}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: a83cd43129f56b946b21f7ecc559a06b, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sebesseg: 5
   ugrasEro: 10
-  lives: 3
+  health: 3
 --- !u!114 &2197354675872534663
 MonoBehaviour:
   m_ObjectHideFlags: 0
