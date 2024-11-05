@@ -2,16 +2,18 @@ using UnityEngine;
 
 public class RadiatorBoss : MonoBehaviour
 {
-    public GameObject snowProjectilePrefab; // Prefab a h� l�ved�khez
-    public Transform firePoint; // A pont, ahonnan a l�v�s indul
-    public float fireRate = 1.5f; // L�v�s gyakoris�ga m�sodpercenk�nt
-    public float projectileSpeed = 5f; // L�ved�k sebess�ge
+    public GameObject snowProjectilePrefab; // Prefab a hó lövedékhez
+    public Transform firePoint; // A pont, ahonnan a lövés indul
+    public float fireRate = 1.5f; // Lövés gyakorisága másodpercenként
+    public float projectileSpeed = 5f; // Lövedék sebessége
 
     private float nextFireTime = 0f;
+    private bool isVisible = false; // Állapot, hogy a RadiatorBoss látható-e a képernyőn
 
     private void Update()
     {
-        if (Time.time >= nextFireTime)
+        // Csak akkor lő, ha látható a képernyőn és elérkezett az idő
+        if (isVisible && Time.time >= nextFireTime)
         {
             ShootSnow();
             nextFireTime = Time.time + fireRate;
@@ -20,9 +22,23 @@ public class RadiatorBoss : MonoBehaviour
 
     private void ShootSnow()
     {
-        // L�trehozzuk a h� l�ved�ket �s be�ll�tjuk a sebess�g�t
+        // Létrehozzuk a hó lövedéket és beállítjuk a sebességét
         GameObject snowProjectile = Instantiate(snowProjectilePrefab, firePoint.position, firePoint.rotation);
         Rigidbody2D rb = snowProjectile.GetComponent<Rigidbody2D>();
-        rb.velocity = firePoint.right * projectileSpeed;
+
+        // A lövedék balra mozog a firePoint bal iránya mentén
+        rb.velocity = firePoint.right * -projectileSpeed;
+    }
+
+    // Ez a metódus hívódik meg, amikor a RadiatorBoss láthatóvá válik a képernyőn
+    private void OnBecameVisible()
+    {
+        isVisible = true;
+    }
+
+    // Ez a metódus hívódik meg, amikor a RadiatorBoss kikerül a képernyő látóteréből
+    private void OnBecameInvisible()
+    {
+        isVisible = false;
     }
 }
