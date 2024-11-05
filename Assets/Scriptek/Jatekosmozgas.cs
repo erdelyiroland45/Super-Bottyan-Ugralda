@@ -6,6 +6,7 @@ public class Jatekosmozgas : MonoBehaviour
     public float ugrasEro = 7.0f;  // Jump force
     private bool aFoldonVan = true;  // Tracking if the player is on the ground
     private bool isDead = false;  // Track if the player is dead
+    public int health = 3; // Player health
 
     private Rigidbody2D rb;  // The player's Rigidbody2D component
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer
@@ -68,8 +69,8 @@ public class Jatekosmozgas : MonoBehaviour
         // Handle collision with enemies
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            // Call the damage method from Eletek class when colliding with an enemy
-            GetComponent<Eletek>().Sebzodes(1f); // Call the damage method from Eletek class
+            // Call the damage method when colliding with an enemy
+            TakeDamage(1);
         }
     }
 
@@ -91,5 +92,15 @@ public class Jatekosmozgas : MonoBehaviour
         animator.SetBool("Halott", true); // Trigger death animation
         isDead = true; // Set dead flag
         rb.velocity = Vector2.zero; // Stop player movement
+    }
+
+    // Method to handle taking damage
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            GameOver();
+        }
     }
 }
