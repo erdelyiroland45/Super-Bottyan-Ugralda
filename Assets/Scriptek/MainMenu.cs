@@ -9,11 +9,17 @@ public class MainMenu : MonoBehaviour
     {
         // Use SceneManager to load the scene instead of Application.LoadLevel
         SceneManager.LoadScene("M_Epulet");  // Make sure "SampleScene" matches your scene's name
+        Time.timeScale = 1f;
     }
 
     public void QuitGame()
     {
         Debug.Log("QUIT!");  // Log message when quitting
         Application.Quit();   // Quit the application
+    }
+
+    public void BackMenu()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }

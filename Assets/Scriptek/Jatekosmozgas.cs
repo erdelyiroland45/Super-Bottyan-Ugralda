@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Jatekosmozgas : MonoBehaviour
 {
@@ -92,6 +93,7 @@ public class Jatekosmozgas : MonoBehaviour
         animator.SetBool("Halott", true); // Trigger death animation
         isDead = true; // Set dead flag
         rb.velocity = Vector2.zero; // Stop player movement
+        SceneManager.LoadScene("GameOver");
     }
 
     // Method to handle taking damage

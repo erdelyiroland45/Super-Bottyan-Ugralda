@@ -6,11 +6,6 @@ public class beszed : MonoBehaviour
 {
     [SerializeField] private GameObject beszedUI;
 
-    private void Start()
-    {
-        beszedUI.SetActive(false);
-    }
-
     public void BeszedVege()
     {
         beszedUI.SetActive(false);

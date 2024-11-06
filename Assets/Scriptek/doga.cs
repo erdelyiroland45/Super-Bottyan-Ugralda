@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class doga : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class doga : MonoBehaviour
     {
         ToggleShop();
         doga2UI.SetActive(false);
+        SceneManager.LoadScene("END");
     }
 
     // Toggles the shop UI (dogaUI)

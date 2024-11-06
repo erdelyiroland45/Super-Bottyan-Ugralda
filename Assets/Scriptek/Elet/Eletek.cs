@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Eletek : MonoBehaviour
 {
@@ -84,6 +85,7 @@ public class Eletek : MonoBehaviour
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Enemy"), true); // Ignore collisions with enemies
 
         // You may want to handle game over logic here, like showing a game over screen or restarting the game
+        SceneManager.LoadScene("GameOver");
     }
 
     private IEnumerator Sebezhetetlenseg()
