@@ -139,6 +139,11 @@ public class Bocs : MonoBehaviour
                 healthBar.gameObject.SetActive(false); // Hide health bar when destroyed
             }
             StopCoroutines();
+
+                        if (portalManager != null)
+            {
+                portalManager.ActivatePortal();
+            }
         }
     }
 

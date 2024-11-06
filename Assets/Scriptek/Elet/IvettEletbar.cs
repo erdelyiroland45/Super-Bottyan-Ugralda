@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GuttyanEletbar : MonoBehaviour
+public class IvettEletbar : MonoBehaviour
 {
-    [SerializeField] private Guttyan guttyan;      // Reference to the Veszter (mini-boss) component
+    [SerializeField] private Ivett ivett;      // Reference to the Veszter (mini-boss) component
     [SerializeField] private Image osszeselet;     // Reference to the overall health bar (background)
     [SerializeField] private Image jelenlegielet;  // Reference to the current health bar (foreground)
 
@@ -21,10 +21,10 @@ public class GuttyanEletbar : MonoBehaviour
 
     public void UpdateHealthBar()
     {
-        if (guttyan != null && jelenlegielet != null)
+        if (ivett != null && jelenlegielet != null)
         {
             // Set fill amount based on current health divided by 10 (to match the 10 hearts)
-            jelenlegielet.fillAmount = (float)guttyan.Health / 10f;
+            jelenlegielet.fillAmount = (float)ivett.Health / 10f;
 
             // Ensure fill amount doesn't exceed 1 (100%)
             if (jelenlegielet.fillAmount > 1f)

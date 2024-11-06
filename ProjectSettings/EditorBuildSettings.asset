@@ -18,9 +18,9 @@ EditorBuildSettings:
     path: Assets/Palyak/A_Epulet.unity
     guid: 1519d4ead3f0b1444a1eee5942707037
   - enabled: 1
-    path: Assets/Palyak/GameOver.unity
-    guid: 871b41962ed16d349ac409296e403ecf
-  - enabled: 1
     path: Assets/Palyak/END.unity
     guid: ae2051a2f9813724d86719107552ed04
+  - enabled: 1
+    path: Assets/Palyak/GameOver.unity
+    guid: 871b41962ed16d349ac409296e403ecf
   m_configObjects: {}

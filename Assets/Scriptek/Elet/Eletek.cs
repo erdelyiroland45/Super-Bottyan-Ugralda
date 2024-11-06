@@ -13,6 +13,8 @@ public class Eletek : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Animator animator; // Reference to the Animator component
 
+    private AudioSource audioSource;
+
     private bool isDead = false; // Flag to check if the player is dead
     private bool invulnerable = false; // Flag to check if the player is invulnerable
 
@@ -46,7 +48,6 @@ public class Eletek : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        
         // Check if the collision is with a "Elet" object (heart)
         if (collision.gameObject.CompareTag("Elet"))
         {
@@ -67,13 +68,18 @@ public class Eletek : MonoBehaviour
         }
         else
         {
-            Die(); // Call the die function
+            StartCoroutine(Die()); // Call the Die coroutine to handle death and delay
         }
     }
 
-    private void Die()
+    private IEnumerator Die()
     {
         isDead = true;
+
+                if (audioSource != null)
+        {
+            audioSource.Stop();
+        }
 
         // Disable player movement
         GetComponent<Jatekosmozgas>().enabled = false; 
@@ -84,7 +90,10 @@ public class Eletek : MonoBehaviour
         // Ignore collisions with enemies
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Enemy"), true); // Ignore collisions with enemies
 
-        // You may want to handle game over logic here, like showing a game over screen or restarting the game
+        // Wait for the animation to play, plus an additional 1-second delay
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 3f);
+
+        // Load Game Over scene
         SceneManager.LoadScene("GameOver");
     }
 
