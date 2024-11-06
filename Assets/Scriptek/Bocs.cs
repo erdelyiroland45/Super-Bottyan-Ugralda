@@ -17,10 +17,12 @@ public class Bocs : MonoBehaviour
 
     private Coroutine projectileSpawnCoroutine;                    // Reference for the projectile spawning coroutine
 
-    
     private int stompCount = 0;     
     private bool isVisible = false;                                // Boolean to track visibility
     private int aktataskaCount = 0;                                // Counter for the Aktataska projectiles
+    private bool hasMadeMistake = false;                           // Track if a mistake was made in doga
+
+    private bool isIdle = false;  // New flag to indicate Bocs is idle
 
     public int Health => health;                                   // Public getter for current health
     public int MaxHealth => maxHealth;                             // Public getter for max health
@@ -34,6 +36,25 @@ public class Bocs : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        doga.OnMistakeMade += EnableAttack; // Subscribe to event
+    }
+
+    private void OnDisable()
+    {
+        doga.OnMistakeMade -= EnableAttack; // Unsubscribe from event
+    }
+
+    private void EnableAttack()
+    {
+        hasMadeMistake = true;
+        if (isVisible && !isIdle && projectileSpawnCoroutine == null)
+        {
+            projectileSpawnCoroutine = StartCoroutine(SpawnProjectilesCoroutine());
+        }
+    }
+
     private void OnBecameVisible()
     {
         isVisible = true;
@@ -42,7 +63,7 @@ public class Bocs : MonoBehaviour
             healthBar.gameObject.SetActive(true); // Show health bar when visible
         }
 
-        if (projectileSpawnCoroutine == null)
+        if (projectileSpawnCoroutine == null && hasMadeMistake && !isIdle) // Only start if a mistake was made and not idle
         {
             projectileSpawnCoroutine = StartCoroutine(SpawnProjectilesCoroutine());
         }
@@ -59,9 +80,11 @@ public class Bocs : MonoBehaviour
         StopCoroutines();
     }
 
+    // The rest of the code remains unchanged...
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && isVisible) // Check if Veszter is visible
+        if (collision.CompareTag("Player") && isVisible && !isIdle) // Check if Veszter is visible and not idle
         {
             Eletek playerHealth = collision.GetComponent<Eletek>();
             if (playerHealth != null)
@@ -74,7 +97,7 @@ public class Bocs : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && isVisible) // Check if Veszter is visible
+        if (collision.gameObject.CompareTag("Player") && isVisible && !isIdle) // Check if Veszter is visible and not idle
         {
             float playerYPosition = collision.transform.position.y;
             float bocsYPosition = transform.position.y;
@@ -96,7 +119,7 @@ public class Bocs : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (!isVisible) return; // Prevent damage if not visible
+        if (!isVisible || isIdle) return; // Prevent damage if not visible or idle
 
         health -= damage;
         health = Mathf.Clamp(health, 0, maxHealth);
@@ -130,7 +153,7 @@ public class Bocs : MonoBehaviour
 
     private IEnumerator SpawnProjectilesCoroutine()
     {
-        while (health > 0)
+        while (health > 0 && !isIdle)
         {
             if (aktataskaCount < 5)
             {
@@ -198,5 +221,13 @@ public class Bocs : MonoBehaviour
                 rb.velocity = direction * egyesLaunchForce;
             }
         }
+    }
+
+    // New method to set Bocs idle
+    public void GoIdle()
+    {
+        isIdle = true;
+        // Stop any remaining projectiles or damage interactions
+        StopCoroutines();
     }
 }

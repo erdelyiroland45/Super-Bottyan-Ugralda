@@ -2,25 +2,25 @@ using UnityEngine;
 
 public class Bolt : MonoBehaviour
 {
-    public static bool BoltActive = false; // Annak nyilvántartása, hogy a bolt aktív-e
-    [SerializeField] private GameObject shopUI; // A vásárlói felület Canvas eleme
+    public static bool BoltActive = false; // Annak nyilvï¿½ntartï¿½sa, hogy a bolt aktï¿½v-e
+    [SerializeField] private GameObject shopUI; // A vï¿½sï¿½rlï¿½i felï¿½let Canvas eleme
 
-    private bool isPlayerInRange = false; // Jelzi, ha a játékos a bolt közelében van
+    private bool isPlayerInRange = false; // Jelzi, ha a jï¿½tï¿½kos a bolt kï¿½zelï¿½ben van
 
     private void Start()
     {
-        shopUI.SetActive(false); // Kezdetben láthatatlan a boltfelület
+        shopUI.SetActive(false); // Kezdetben lï¿½thatatlan a boltfelï¿½let
     }
 
     private void Update()
     {
-        // Ha a játékos a bolt közelében van, és megnyomja az "E" gombot
+        // Ha a jï¿½tï¿½kos a bolt kï¿½zelï¿½ben van, ï¿½s megnyomja az "E" gombot
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
             ToggleShop();
         }
 
-        // Ha a bolt aktív, és megnyomja az "ESC" gombot, bezárjuk a boltot
+        // Ha a bolt aktï¿½v, ï¿½s megnyomja az "ESC" gombot, bezï¿½rjuk a boltot
         if (BoltActive && Input.GetKeyDown(KeyCode.Escape))
         {
             CloseShop();
@@ -29,7 +29,7 @@ public class Bolt : MonoBehaviour
 
     private void ToggleShop()
     {
-        // A boltfelület láthatóságának kapcsolása
+        // A boltfelï¿½let lï¿½thatï¿½sï¿½gï¿½nak kapcsolï¿½sa
         if (BoltActive)
         {
             CloseShop();
@@ -42,15 +42,15 @@ public class Bolt : MonoBehaviour
 
     private void OpenShop()
     {
-        shopUI.SetActive(true); // Boltfelület megjelenítése
-        Time.timeScale = 0f; // Játék megállítása
+        shopUI.SetActive(true); // Boltfelï¿½let megjelenï¿½tï¿½se
+        Time.timeScale = 0f; // Jï¿½tï¿½k megï¿½llï¿½tï¿½sa
         BoltActive = true;
     }
 
     private void CloseShop()
     {
-        shopUI.SetActive(false); // Boltfelület elrejtése
-        Time.timeScale = 1f; // Játék folytatása
+        shopUI.SetActive(false); // Boltfelï¿½let elrejtï¿½se
+        Time.timeScale = 1f; // Jï¿½tï¿½k folytatï¿½sa
         BoltActive = false;
     }
 
@@ -58,7 +58,7 @@ public class Bolt : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            isPlayerInRange = true; // A játékos a bolt trigger területén belül van
+            isPlayerInRange = true; // A jï¿½tï¿½kos a bolt trigger terï¿½letï¿½n belï¿½l van
         }
     }
 
@@ -66,8 +66,8 @@ public class Bolt : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            isPlayerInRange = false; // A játékos elhagyta a bolt trigger területét
-            if (BoltActive) CloseShop(); // Bezárjuk a boltot, ha a játékos kilép a területbõl
+            isPlayerInRange = false; // A jï¿½tï¿½kos elhagyta a bolt trigger terï¿½letï¿½t
+            if (BoltActive) CloseShop(); // Bezï¿½rjuk a boltot, ha a jï¿½tï¿½kos kilï¿½p a terï¿½letbï¿½l
         }
     }
 }
