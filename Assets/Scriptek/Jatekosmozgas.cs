@@ -3,15 +3,21 @@ using UnityEngine.SceneManagement;
 
 public class Jatekosmozgas : MonoBehaviour
 {
-    public float sebesseg = 5.0f;  // Player movement speed
-    public float ugrasEro = 7.0f;  // Jump force
-    private bool aFoldonVan = true;  // Tracking if the player is on the ground
+    [SerializeField] private float sebesseg = 5.0f;  // Player movement speed
+    [SerializeField] private float ugrasEro = 7.0f;  // Jump force
+    [SerializeField] private int health = 3; // Player health
+    
+    private bool isGrounded = false;  // Track if the player is grounded
+    private bool isTouchingWall = false;  // Track if the player is touching a wall
     private bool isDead = false;  // Track if the player is dead
-    public int health = 3; // Player health
 
     private Rigidbody2D rb;  // The player's Rigidbody2D component
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer
     private Animator animator; // Reference to the Animator
+
+    private Eletek eletekScript; // Reference to Eletek script
+
+    [SerializeField] private BoxCollider2D talajDetectionCollider; // Reference to the TalajDetection collider (child object)
 
     void Start()
     {
@@ -19,38 +25,54 @@ public class Jatekosmozgas : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>(); // Connects to the Animator component
         animator.SetBool("Halott", false);
+
+        // Get the Eletek script component to check if the player is dead
+        eletekScript = GetComponent<Eletek>();
+
+        // If talajDetectionCollider isn't assigned through the Inspector, try to automatically get it
+        if (talajDetectionCollider == null)
+        {
+            talajDetectionCollider = transform.Find("TalajDetection").GetComponent<BoxCollider2D>();
+        }
     }
 
     void Update()
     {
-        if (isDead) return; // Stop all input if dead
+        // If the player is dead, stop all input and movement
+        if (eletekScript.isDead) 
+        {
+            isDead = true;
+            rb.velocity = Vector2.zero;  // Stop the player from moving
+            return;
+        }
 
+        // Horizontal movement
         float vizszintesMozgas = Input.GetAxis("Horizontal");  // Horizontal input (A/D or Arrow keys)
-
+        
         // Create movement vector based on speed
         Vector2 mozgasiVektor = new Vector2(vizszintesMozgas * sebesseg, rb.velocity.y);
         rb.velocity = mozgasiVektor;
 
-        // Check for jump input
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && aFoldonVan)
-        {
-            Jump();
-        }
-
         // Update sprite direction based on movement
-        if (vizszintesMozgas != 0) // Flip sprite regardless of ground status for jumping
+        if (vizszintesMozgas != 0)
         {
             spriteRenderer.flipX = vizszintesMozgas > 0; // Flip sprite to the right when moving right, left when moving left
         }
 
+        // Check for jump input (W or Up Arrow keys)
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded)
+        {
+            Jump();
+        }
+
         // Update animator parameters
-        animator.SetBool("Mozog", vizszintesMozgas != 0 && aFoldonVan); // Only moving if on ground
+        animator.SetBool("Mozog", vizszintesMozgas != 0 && isGrounded); // Only moving if on ground
     }
 
     private void Jump()
     {
         rb.AddForce(Vector2.up * ugrasEro, ForceMode2D.Impulse);
-        aFoldonVan = false; // Set to airborne after jumping
+        isGrounded = false; // Set to airborne after jumping
 
         // Set the Ugrik parameter to true for the jump animation
         animator.SetBool("Ugrik", true);
@@ -58,51 +80,55 @@ public class Jatekosmozgas : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Check if the player collides with the ground or jumpable object
-        if (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("Solid"))
-        {
-            aFoldonVan = true; // Allow jumping
+        // Flags to track whether we're grounded and touching a wall in the same frame
+        bool isCollidingWithGround = false;
+        bool isCollidingWithWall = false;
 
-            // Set the Ugrik parameter to false to switch back to idle or running
-            animator.SetBool("Ugrik", false);
+        // Iterate through all the contacts in the collision
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            // Check for a ground collision (normal pointing upwards)
+            if (contact.normal.y > 0.5f && collision.gameObject.CompareTag("Talaj"))
+            {
+                isCollidingWithGround = true; // Player is grounded
+            }
+            // Check for a wall collision (normal pointing horizontally)
+            else if (Mathf.Abs(contact.normal.x) > 0.5f && collision.gameObject.CompareTag("Talaj"))
+            {
+                isCollidingWithWall = true; // Player is touching a wall
+            }
         }
 
-        // Handle collision with enemies
-        if (collision.gameObject.CompareTag("Enemy"))
+        // Update grounded status if colliding with the ground, but ignore wall collisions for jumping logic
+        if (isCollidingWithGround)
         {
-            // Call the damage method when colliding with an enemy
-            TakeDamage(1);
+            isGrounded = true; // Player is grounded
+            animator.SetBool("Ugrik", false); // Reset jump animation state
+        }
+
+        // If colliding with a wall, we don't update grounded status for jumping
+        if (isCollidingWithWall)
+        {
+            isTouchingWall = true; // Player is touching a wall
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        // If leaving the ground or jumpable object, mark as airborne
-        if (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("Solid"))
+        // Iterate through all the contacts in the collision
+        foreach (ContactPoint2D contact in collision.contacts)
         {
-            aFoldonVan = false;
-        }
-    }
+            // If we were grounded and now leaving the ground, mark as airborne
+            if (contact.normal.y > 0.5f && collision.gameObject.CompareTag("Talaj"))
+            {
+                isGrounded = false; // Player is no longer grounded
+            }
 
-    // Handle game over scenario
-    void GameOver()
-    {
-        if (isDead) return; // Prevent repeated calls to GameOver
-
-        Debug.Log("Game Over!");
-        animator.SetBool("Halott", true); // Trigger death animation
-        isDead = true; // Set dead flag
-        rb.velocity = Vector2.zero; // Stop player movement
-        SceneManager.LoadScene("GameOver");
-    }
-
-    // Method to handle taking damage
-    public void TakeDamage(int damage)
-    {
-        health -= damage;
-        if (health <= 0)
-        {
-            GameOver();
+            // If we were touching a wall, update the flag
+            if (Mathf.Abs(contact.normal.x) > 0.5f && collision.gameObject.CompareTag("Talaj"))
+            {
+                isTouchingWall = false; // Player is no longer touching a wall
+            }
         }
     }
 }

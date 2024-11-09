@@ -47,5 +47,12 @@ public class Filament : MonoBehaviour
                 Debug.Log("Damage dealt to player: " + sebzodes); // Log for debugging
             }
         }
+        // Check if the object is tagged as "Talaj" (ground or obstacle)
+        else if (collision.CompareTag("Utkozo"))
+        {
+            // Reverse the horizontal movement direction
+            rb.velocity = new Vector2(-rb.velocity.x, rb.velocity.y);
+            Debug.Log("Direction reversed after hitting Talaj");
+        }
     }
 }
