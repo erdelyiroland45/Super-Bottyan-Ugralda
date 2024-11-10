@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Palyak/Menu.unity
+    path: Assets/Palyak/Menu1.unity
     guid: 24660cddf5d70464e8785fcaff9c74e3
   - enabled: 1
     path: Assets/Palyak/M_Epulet.unity
