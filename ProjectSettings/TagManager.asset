@@ -9,6 +9,8 @@ TagManager:
   - Solid
   - Elet
   - Utkozo
+  - Deadzone
+  - Fal
   layers:
   - Default
   - TransparentFX

@@ -6,6 +6,9 @@ public class Holovedek : MonoBehaviour
 {
     [SerializeField] private float sebzodes = 1f;
 
+    // Desired Z-coordinate value
+    private const float fixedZPosition = -1f;
+
     void Start()
     {
         // Minden szükséges beállítást itt elvégzünk
@@ -14,7 +17,10 @@ public class Holovedek : MonoBehaviour
 
     void Update()
     {
-        // Itt hozzáadhatsz mozgási logikát, ha szükséges
+        // Set the Z-coordinate of the projectile to always be 1.8
+        Vector3 currentPosition = transform.position;
+        currentPosition.z = fixedZPosition;  // Lock the Z-coordinate
+        transform.position = currentPosition;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

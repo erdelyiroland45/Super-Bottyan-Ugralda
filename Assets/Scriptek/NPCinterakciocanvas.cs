@@ -2,25 +2,27 @@ using UnityEngine;
 
 public class Bolt : MonoBehaviour
 {
-    public static bool BoltActive = false; // Annak nyilv�ntart�sa, hogy a bolt akt�v-e
-    [SerializeField] private GameObject shopUI; // A v�s�rl�i fel�let Canvas eleme
+    public static bool BoltActive = false; // Tracks if the shop is active
+    [SerializeField] private GameObject shopUI; // Shop UI Canvas element
+    [SerializeField] private TextMesh interactText; // Regular TextMesh for interaction prompt
 
-    private bool isPlayerInRange = false; // Jelzi, ha a j�t�kos a bolt k�zel�ben van
+    private bool isPlayerInRange = false; // Tracks if the player is near the shop
 
     private void Start()
     {
-        shopUI.SetActive(false); // Kezdetben l�thatatlan a boltfel�let
+        shopUI.SetActive(false); // Initially hide the shop UI
+        interactText.gameObject.SetActive(false); // Hide the interaction text initially
     }
 
     private void Update()
     {
-        // Ha a j�t�kos a bolt k�zel�ben van, �s megnyomja az "E" gombot
+        // Toggle shop UI if player presses "E" while in range
         if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
         {
             ToggleShop();
         }
 
-        // Ha a bolt akt�v, �s megnyomja az "ESC" gombot, bez�rjuk a boltot
+        // Close shop if "Escape" is pressed while shop is open
         if (BoltActive && Input.GetKeyDown(KeyCode.Escape))
         {
             CloseShop();
@@ -29,7 +31,6 @@ public class Bolt : MonoBehaviour
 
     private void ToggleShop()
     {
-        // A boltfel�let l�that�s�g�nak kapcsol�sa
         if (BoltActive)
         {
             CloseShop();
@@ -42,15 +43,16 @@ public class Bolt : MonoBehaviour
 
     private void OpenShop()
     {
-        shopUI.SetActive(true); // Boltfel�let megjelen�t�se
-        Time.timeScale = 0f; // J�t�k meg�ll�t�sa
+        shopUI.SetActive(true); // Show shop UI
+        Time.timeScale = 0f; // Pause the game
         BoltActive = true;
+        interactText.gameObject.SetActive(false); // Hide interaction prompt when shop is open
     }
 
     private void CloseShop()
     {
-        shopUI.SetActive(false); // Boltfel�let elrejt�se
-        Time.timeScale = 1f; // J�t�k folytat�sa
+        shopUI.SetActive(false); // Hide shop UI
+        Time.timeScale = 1f; // Resume the game
         BoltActive = false;
     }
 
@@ -58,7 +60,8 @@ public class Bolt : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            isPlayerInRange = true; // A j�t�kos a bolt trigger ter�let�n bel�l van
+            isPlayerInRange = true; // Player entered the shop zone
+            interactText.gameObject.SetActive(true); // Show interaction text
         }
     }
 
@@ -66,8 +69,12 @@ public class Bolt : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            isPlayerInRange = false; // A j�t�kos elhagyta a bolt trigger ter�let�t
-            if (BoltActive) CloseShop(); // Bez�rjuk a boltot, ha a j�t�kos kil�p a ter�letb�l
+            isPlayerInRange = false; // Player left the shop zone
+            interactText.gameObject.SetActive(false); // Hide interaction text
+
+            // Close the shop if the player leaves the zone while it’s open
+            if (BoltActive) 
+                CloseShop();
         }
     }
 }

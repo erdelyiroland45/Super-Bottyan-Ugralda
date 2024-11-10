@@ -6,53 +6,82 @@ public class Filament : MonoBehaviour
     [SerializeField] private float speed = 3.0f; // Speed of the enemy movement
     private Rigidbody2D rb; // Reference to the Rigidbody2D component
     private Camera mainCamera; // Reference to the main camera
+    private int direction = -1; // Default movement direction to the left (-1)
+    private bool hasReversed = false; // Flag to track if direction has been reversed in a collision
+    private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
 
     private void Start()
     {
-        // Get the Rigidbody2D component attached to this GameObject
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Get the SpriteRenderer component
         mainCamera = Camera.main; // Get the main camera
+
+        // Ensure the sprite is initially facing left
+        spriteRenderer.flipX = false;
     }
 
     private void Update()
     {
-        // Move the enemy to the left continuously
-        rb.velocity = new Vector2(-speed, rb.velocity.y);
+        rb.velocity = new Vector2(speed * direction, rb.velocity.y);
 
         // Check if the enemy has moved off the left side of the camera view
         if (IsOutOfCameraView())
         {
             Destroy(gameObject); // Despawn the enemy if it's outside the camera view
+            return;
         }
     }
 
     private bool IsOutOfCameraView()
     {
-        // Get the enemy's position in screen coordinates
         Vector3 screenPoint = mainCamera.WorldToViewportPoint(transform.position);
-        // Check if the enemy is outside the left side of the screen (viewport x < 0)
         return screenPoint.x < 0;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Check if the object that entered the trigger is tagged as "Player"
         if (collision.CompareTag("Player"))
         {
-            // Get the Eletek component from the player and apply damage
             Eletek playerHealth = collision.GetComponent<Eletek>();
             if (playerHealth != null)
             {
-                playerHealth.Sebzodes(sebzodes); // Call the damage method
-                Debug.Log("Damage dealt to player: " + sebzodes); // Log for debugging
+                playerHealth.Sebzodes(sebzodes);
+                Debug.Log("Damage dealt to player: " + sebzodes);
             }
         }
-        // Check if the object is tagged as "Talaj" (ground or obstacle)
-        else if (collision.CompareTag("Utkozo"))
+        else if (collision.CompareTag("Fal"))
         {
-            // Reverse the horizontal movement direction
-            rb.velocity = new Vector2(-rb.velocity.x, rb.velocity.y);
-            Debug.Log("Direction reversed after hitting Talaj");
+            // Only reverse direction once per collision
+            if (!hasReversed)
+            {
+                ReverseDirection();
+                hasReversed = true; // Set the flag to true after reversing
+            }
         }
+        else
+        {
+            Physics2D.IgnoreCollision(collision, GetComponent<Collider2D>());
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        // Reset the flag when the enemy exits collision with "Fal"
+        if (collision.CompareTag("Fal"))
+        {
+            hasReversed = false;
+        }
+    }
+
+    private void ReverseDirection()
+    {
+        rb.velocity = Vector2.zero;
+        direction = -direction; // Toggle direction between -1 and 1
+
+        // Flip the sprite based on the new direction
+        spriteRenderer.flipX = direction > 0;
+
+        // Log the direction each time it reverses
+        Debug.Log("Direction reversed to: " + direction);
     }
 }

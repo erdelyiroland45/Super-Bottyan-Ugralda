@@ -6,20 +6,26 @@ public class Futodiak : MonoBehaviour
     [SerializeField] private float speed = 3.0f; // Speed of the enemy movement
     private Rigidbody2D rb; // Reference to the Rigidbody2D component
     private Camera mainCamera; // Reference to the main camera
+    private float movementDirection; // Stores the movement direction based on flip state
+    private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
 
     private void Start()
     {
-        // Get the Rigidbody2D component attached to this GameObject
+        // Get the Rigidbody2D and SpriteRenderer components
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         mainCamera = Camera.main; // Get the main camera
+
+        // Determine initial movement direction based on the Flip X setting in SpriteRenderer
+        movementDirection = spriteRenderer.flipX ? 1 : -1;
     }
 
     private void Update()
     {
-        // Move the enemy to the left continuously
-        rb.velocity = new Vector2(-speed, rb.velocity.y);
+        // Move the enemy based on the determined direction
+        rb.velocity = new Vector2(speed * movementDirection, rb.velocity.y);
 
-        // Check if the enemy has moved off the left side of the camera view
+        // Check if the enemy has moved off the left or right side of the camera view
         if (IsOutOfCameraView())
         {
             Destroy(gameObject); // Despawn the enemy if it's outside the camera view
@@ -30,8 +36,8 @@ public class Futodiak : MonoBehaviour
     {
         // Get the enemy's position in screen coordinates
         Vector3 screenPoint = mainCamera.WorldToViewportPoint(transform.position);
-        // Check if the enemy is outside the left side of the screen (viewport x < 0)
-        return screenPoint.x < 0;
+        // Check if the enemy is outside the screen (viewport x < 0 or x > 1)
+        return screenPoint.x < 0 || screenPoint.x > 1;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

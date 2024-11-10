@@ -18,14 +18,11 @@ public class Eletek : MonoBehaviour
     public bool isDead { get; private set; } = false;
     private bool invulnerable = false;
 
-    private Rigidbody2D rb;  // The player's Rigidbody2D component
-
     private void Awake()
     {
         Jelenlegielet = maxElet;
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -38,7 +35,12 @@ public class Eletek : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Elet"))
+        // Check if the player enters a "Deadzone"
+        if (collision.gameObject.CompareTag("Deadzone"))
+        {
+            StartCoroutine(Die()); // Instantly kill the player
+        }
+        else if (collision.gameObject.CompareTag("Elet"))
         {
             IncreaseHealth(1f);
             Destroy(collision.gameObject);
@@ -63,6 +65,8 @@ public class Eletek : MonoBehaviour
 
     private IEnumerator Die()
     {
+        if (isDead) yield break;
+
         isDead = true;
 
         if (audioSource != null)
@@ -71,8 +75,6 @@ public class Eletek : MonoBehaviour
         }
 
         animator.SetBool("Halott", true);
-
-        rb.velocity = Vector2.zero; // Stop player movement
 
         Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Enemy"), true);
 
@@ -85,7 +87,7 @@ public class Eletek : MonoBehaviour
     {
         invulnerable = true;
         Physics2D.IgnoreLayerCollision(6, 7, true);
-        
+
         for (int i = 0; i < pirosanvillogas; i++)
         {
             spriteRenderer.color = new Color(1, 0, 0, 0.5f);
