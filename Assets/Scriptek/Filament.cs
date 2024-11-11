@@ -49,7 +49,7 @@ public class Filament : MonoBehaviour
                 Debug.Log("Damage dealt to player: " + sebzodes);
             }
         }
-        else if (collision.CompareTag("Fal"))
+        else if (collision.CompareTag("TalajFalKombo"))
         {
             // Only reverse direction once per collision
             if (!hasReversed)
@@ -67,7 +67,7 @@ public class Filament : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         // Reset the flag when the enemy exits collision with "Fal"
-        if (collision.CompareTag("Fal"))
+        if (collision.CompareTag("TalajFalKombo"))
         {
             hasReversed = false;
         }

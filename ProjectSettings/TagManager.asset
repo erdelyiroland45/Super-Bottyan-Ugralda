@@ -11,6 +11,7 @@ TagManager:
   - Utkozo
   - Deadzone
   - Fal
+  - TalajFalKombo
   layers:
   - Default
   - TransparentFX

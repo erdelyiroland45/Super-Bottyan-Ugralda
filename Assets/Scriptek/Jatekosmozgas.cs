@@ -87,13 +87,13 @@ public class Jatekosmozgas : MonoBehaviour
         // Iterate through all the contacts in the collision
         foreach (ContactPoint2D contact in collision.contacts)
         {
-            // Check for a ground collision (normal pointing upwards)
-            if (contact.normal.y > 0.5f && collision.gameObject.CompareTag("Talaj"))
+            // Check for a ground collision (normal pointing upwards) with either "Talaj" or "TalajFalKombo"
+            if (contact.normal.y > 0.5f && (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("TalajFalKombo")))
             {
                 isCollidingWithGround = true; // Player is grounded
             }
-            // Check for a wall collision (normal pointing horizontally)
-            else if (Mathf.Abs(contact.normal.x) > 0.5f && collision.gameObject.CompareTag("Talaj"))
+            // Check for a wall collision (normal pointing horizontally) with either "Talaj" or "TalajFalKombo"
+            else if (Mathf.Abs(contact.normal.x) > 0.5f && (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("TalajFalKombo")))
             {
                 isCollidingWithWall = true; // Player is touching a wall
             }
@@ -119,13 +119,13 @@ public class Jatekosmozgas : MonoBehaviour
         foreach (ContactPoint2D contact in collision.contacts)
         {
             // If we were grounded and now leaving the ground, mark as airborne
-            if (contact.normal.y > 0.5f && collision.gameObject.CompareTag("Talaj"))
+            if (contact.normal.y > 0.5f && (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("TalajFalKombo")))
             {
                 isGrounded = false; // Player is no longer grounded
             }
 
             // If we were touching a wall, update the flag
-            if (Mathf.Abs(contact.normal.x) > 0.5f && collision.gameObject.CompareTag("Talaj"))
+            if (Mathf.Abs(contact.normal.x) > 0.5f && (collision.gameObject.CompareTag("Talaj") || collision.gameObject.CompareTag("TalajFalKombo")))
             {
                 isTouchingWall = false; // Player is no longer touching a wall
             }
