@@ -60,6 +60,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ch_Futo_Diak_Fiu
       objectReference: {fileID: 0}
+    - target: {fileID: 9019805031364751283, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: sebzodes
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

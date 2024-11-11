@@ -60,7 +60,7 @@ public class Jatekosmozgas : MonoBehaviour
         }
 
         // Check for jump input (W or Up Arrow keys)
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded)
+        if ((Input.GetKeyDown(KeyCode.L) || Input.GetKeyDown(KeyCode.DownArrow)) && isGrounded)
         {
             Jump();
         }

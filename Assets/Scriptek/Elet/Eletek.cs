@@ -80,7 +80,7 @@ public class Eletek : MonoBehaviour
 
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 3f);
 
-        SceneManager.LoadScene("GameOver");
+        /*SceneManager.LoadScene("GameOver");*/
     }
 
     private IEnumerator Sebezhetetlenseg()
