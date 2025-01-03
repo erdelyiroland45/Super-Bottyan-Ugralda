@@ -13,7 +13,7 @@ public class Tesitanar : MonoBehaviour
     [SerializeField] private float korEltunesiIdo = 1f; // Körök eltűnésének időtartama
     [SerializeField] private int maxAktivKorok = 10; // Maximális aktív körök száma
 
-    private bool jobbraNez = true; // Az irány, amerre néz
+    private bool jobbraNez = false; // Az irány kezdéskor balra néz
     private SpriteRenderer spriteRenderer;
     private List<GameObject> aktivKorok = new List<GameObject>();
 
@@ -67,7 +67,7 @@ public class Tesitanar : MonoBehaviour
 
         if (rb != null)
         {
-            float irany = jobbraNez ? 1f : -1f;
+            float irany = jobbraNez ? 1f : -1f; // Az irányt a jobbraNez határozza meg
             rb.velocity = new Vector2(irany * 5f, 0f); // Sebesség beállítása
 
             // Add angular velocity to simulate rotation

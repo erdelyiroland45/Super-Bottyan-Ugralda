@@ -1,13 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement; // Hozzáadva a jelenetváltáshoz
 
-public class Kulcsajto : MonoBehaviour
+public class Palyaajto : MonoBehaviour
 {
     [SerializeField] private TextMesh interactText; // Regular TextMesh for interaction prompt
 
     private bool isDoorInRange = false; // Tracks if the player is near the door
-
-    public bool hasKey = false; // Tracks if the player has a key
 
     private void Start()
     {
@@ -25,14 +23,7 @@ public class Kulcsajto : MonoBehaviour
 
     private void TryOpenDoor()
     {
-        if (hasKey)
-        {
-            SceneManager.LoadScene("M_epulet 2"); // Load the new scene
-        }
-        else
-        {
-            Debug.Log("The door is locked. You need a key to open it.");
-        }
+            SceneManager.LoadScene("Tornaterem"); // Load the new scene
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -40,7 +31,7 @@ public class Kulcsajto : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             isDoorInRange = true; // Player entered the door zone
-            interactText.text = "Press E to open the door";
+            interactText.text = "Nyomd E";
             interactText.gameObject.SetActive(true); // Show interaction text
         }
     }

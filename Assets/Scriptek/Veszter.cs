@@ -14,12 +14,13 @@ public class Veszter : MonoBehaviour
     [SerializeField] private GameObject projectilePrefab; // Prefab a projektilhoz
     [SerializeField] private float projectileLaunchForce = 5f; // Erő, amivel a projektilt kilövik
     [SerializeField] private float projectileInterval = 2f; // Időköz a projektilok kilövése között
-    [SerializeField] private Portalkezelo portalManager; // Hivatkozás a Portalkezelo-ra
+    [SerializeField] private GameObject keyPrefab; // Kulcs prefab
+    [SerializeField] private Transform keySpawnPoint; // A kulcs spawn pontja
 
     private Coroutine filamentSpawnCoroutine;      // Hivatkozás a filamentek spawnolásáért felelős coroutine-ra
-    private Coroutine projectileSpawnCoroutine;     // Hivatkozás a projektilok spawnolásáért felelős coroutine-ra
+    private Coroutine projectileSpawnCoroutine;    // Hivatkozás a projektilok spawnolásáért felelős coroutine-ra
     private int stompCount = 0;                    // A fejre ugrások számlálója
-    private bool isVisible = false;                 // Boolean a láthatóság nyomon követésére
+    private bool isVisible = false;                // Boolean a láthatóság nyomon követésére
 
     public int Health => health;                   // Publikus getter a jelenlegi életerőhöz
     public int MaxHealth => maxHealth;             // Publikus getter a maximális életerőhöz
@@ -122,11 +123,22 @@ public class Veszter : MonoBehaviour
             }
             StopCoroutines();
 
-            // Activate portal when Veszter is defeated
-            if (portalManager != null)
-            {
-                portalManager.ActivatePortal();
-            }
+            // Kulcs spawnolása
+            SpawnKey();
+        }
+    }
+
+    private void SpawnKey()
+    {
+        if (keyPrefab != null)
+        {
+            Vector3 spawnPosition = keySpawnPoint != null ? keySpawnPoint.position : transform.position;
+            Instantiate(keyPrefab, spawnPosition, Quaternion.identity);
+            Debug.Log("Key spawned successfully.");
+        }
+        else
+        {
+            Debug.LogWarning("Key prefab is missing.");
         }
     }
 
