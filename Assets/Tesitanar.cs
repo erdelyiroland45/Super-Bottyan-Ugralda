@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI; // Az Életbar kezeléséhez szükséges
+using UnityEngine.SceneManagement; // A SceneManager névtér importálása
 
 public class Tesitanar : MonoBehaviour
 {
@@ -12,14 +14,37 @@ public class Tesitanar : MonoBehaviour
     [SerializeField] private float mozgasSebesseg = 2f; // Mozgás sebessége
     [SerializeField] private float korEltunesiIdo = 1f; // Körök eltűnésének időtartama
     [SerializeField] private int maxAktivKorok = 10; // Maximális aktív körök száma
+    [SerializeField] private float sebzodes = 1f; // Sebzés a játékosnak
+    [SerializeField] private int headDamage = 1; // Sebzés a Tesitanárnak fejre ugráskor
+    [SerializeField] private int maxHealth = 5; // Tesitanár maximális életereje
+    [SerializeField] private Slider healthBar; // Az Életbar UI elem
 
+    private int currentHealth; // Tesitanár aktuális életereje
     private bool jobbraNez = false; // Az irány kezdéskor balra néz
     private SpriteRenderer spriteRenderer;
     private List<GameObject> aktivKorok = new List<GameObject>();
+    private bool sebzheto = false; // A fejre ugrás engedélyezése
+
+    public delegate void TesitanarDeathEvent();
+    public static event TesitanarDeathEvent OnTesitanarDeath; // Globális esemény
+
+    public static bool tesitanarMeghalt = false; // Globális változó a Tesitanár halálához
+
+    public int Health
+    {
+        get { return currentHealth; }
+    }
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        currentHealth = maxHealth; // Életerő inicializálása
+        if (healthBar != null)
+        {
+            healthBar.maxValue = maxHealth;
+            healthBar.value = currentHealth;
+        }
+        jobbraNez = false; // Kezdésként balra nézzen
         StartCoroutine(LovesRutin());
     }
 
@@ -28,9 +53,13 @@ public class Tesitanar : MonoBehaviour
         while (true)
         {
             // Lőjünk az aktuális irányba 10 másodpercig
+            sebzheto = false; // Sebezhetőség kikapcsolása
+            spriteRenderer.color = Color.green; // Színváltás cooldown alatt
             yield return StartCoroutine(KorokKilovese());
 
             // Pihenő 3 másodpercig
+            sebzheto = true; // Sebezhetőség bekapcsolása
+            spriteRenderer.color = Color.white; // Szín visszaállítása
             yield return new WaitForSeconds(pihenoIdotartam);
 
             // Mozgás a következő pozícióra
@@ -127,5 +156,70 @@ public class Tesitanar : MonoBehaviour
     {
         jobbraNez = !jobbraNez;
         spriteRenderer.flipX = !spriteRenderer.flipX; // Sprite tükrözése horizontálisan
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player") && !sebzheto) // Csak akkor sebződik, ha nem sebezhető
+        {
+            Eletek playerHealth = collision.GetComponent<Eletek>();
+            if (playerHealth != null)
+            {
+                playerHealth.Sebzodes(sebzodes); // Sebzés okozása a játékosnak
+                Debug.Log("Damage dealt to player: " + sebzodes);
+            }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && sebzheto) // Csak akkor sebezhető, ha sebzheto = true
+        {
+            float playerYPosition = collision.transform.position.y;
+            float tesitanarYPosition = transform.position.y;
+
+            if (playerYPosition > tesitanarYPosition)
+            {
+                Eletek playerHealth = collision.gameObject.GetComponent<Eletek>();
+                if (playerHealth != null)
+                {
+                    playerHealth.JumpBoost(); // Opció a játékos visszapattanására
+                }
+                TakeDamage(headDamage); // Sebzés a Tesitanárnak
+                Debug.Log("Tesitanár takes head stomp damage");
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+        Debug.Log("Tesitanár took damage: " + damage);
+        if (healthBar != null)
+        {
+            healthBar.value = currentHealth; // Életbar frissítése
+        }
+
+        if (currentHealth <= 0)
+        {
+            Die(); // Tesitanár halála
+        }
+    }
+
+    void Die()
+    {
+        Debug.Log("Tesitanár meghalt");
+
+        // Állítsuk true-ra a tesitanarMeghalt változót
+        tesitanarMeghalt = true;
+
+        // Esemény indítása, hogy más jelenetben tudják kezelni
+        OnTesitanarDeath?.Invoke(); 
+
+        // Scene váltás az A_epulet jelenetre
+        SceneManager.LoadScene("A_epulet"); // A_epulet hozzáadása az aktív jelenetekhez
+
+        // Tesitanár megsemmisítése
+        Destroy(gameObject); 
     }
 }

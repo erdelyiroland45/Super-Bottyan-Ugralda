@@ -14,15 +14,25 @@ public class Eletek : MonoBehaviour
     private Animator animator;
 
     private AudioSource audioSource;
+    private Rigidbody2D rb;
 
     public bool isDead { get; private set; } = false;
     private bool invulnerable = false;
+
+    [Header("Jump Boost")]
+    [SerializeField] private float jumpBoostForce = 10f; // Adjustable force for JumpBoost
 
     private void Awake()
     {
         Jelenlegielet = maxElet;
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody2D not found on the player object.");
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -35,10 +45,9 @@ public class Eletek : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Check if the player enters a "Deadzone"
         if (collision.gameObject.CompareTag("Deadzone"))
         {
-            StartCoroutine(Die()); // Instantly kill the player
+            StartCoroutine(Die());
         }
         else if (collision.gameObject.CompareTag("Elet"))
         {
@@ -105,5 +114,15 @@ public class Eletek : MonoBehaviour
     {
         Jelenlegielet = Mathf.Clamp(Jelenlegielet + amount, 0, maxElet);
         Debug.Log("Health increased! Current health: " + Jelenlegielet);
+    }
+
+    public void JumpBoost()
+    {
+        if (rb != null)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0); // Reset vertical velocity
+            rb.AddForce(Vector2.up * jumpBoostForce, ForceMode2D.Impulse);
+            Debug.Log("Player launched upwards with JumpBoost.");
+        }
     }
 }

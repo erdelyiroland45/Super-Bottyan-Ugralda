@@ -12,6 +12,7 @@ TagManager:
   - Deadzone
   - Fal
   - TalajFalKombo
+  - AlloDiak
   layers:
   - Default
   - TransparentFX
