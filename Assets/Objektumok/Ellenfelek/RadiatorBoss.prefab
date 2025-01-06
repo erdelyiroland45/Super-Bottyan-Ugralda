@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4091173272019143034}
   - component: {fileID: 7464578339487772329}
   - component: {fileID: 7878224223864478265}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RadiatorBoss
   m_TagString: Solid
   m_Icon: {fileID: 0}

@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 
-
 public class Ivett : MonoBehaviour
 {
     [SerializeField] private float sebzodes = 1f; // Damage dealt to the player
@@ -18,14 +17,41 @@ public class Ivett : MonoBehaviour
     private float nextFireTime = 0f;
     private bool isVisible = false;
 
+    private bool invulnerable = false;  // To track invulnerability state
+    private SpriteRenderer spriteRenderer;
+    private Collider2D nonTriggerCollider;
+    
     // Coroutine variable for projectile spawning
     private Coroutine projectileSpawnCoroutine = null;
+    private Coroutine invulnerabilityCoroutine = null; // Coroutine for invulnerability blink effect
 
     public int Health => health;
     public int MaxHealth => maxHealth;
 
     private void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            Debug.LogError("SpriteRenderer is missing on Ivett.");
+        }
+
+        // Find the non-trigger collider
+        Collider2D[] colliders = GetComponents<Collider2D>();
+        foreach (Collider2D col in colliders)
+        {
+            if (!col.isTrigger)
+            {
+                nonTriggerCollider = col;
+                break;
+            }
+        }
+
+        if (nonTriggerCollider == null)
+        {
+            Debug.LogError("Non-trigger collider not found on Ivett.");
+        }
+
         if (healthBar != null)
         {
             healthBar.gameObject.SetActive(false); // Hide health bar initially
@@ -59,9 +85,32 @@ public class Ivett : MonoBehaviour
         StopCoroutines();
     }
 
+    private void Update()
+    {
+        // Flip Ivett's sprite based on the player's position
+        if (isVisible)
+        {
+            GameObject player = GameObject.FindWithTag("Player");
+            if (player != null)
+            {
+                Vector2 directionToPlayer = player.transform.position - transform.position;
+
+                // Flip the sprite depending on which side the player is
+                if (directionToPlayer.x > 0)
+                {
+                    spriteRenderer.flipX = true; // Player is on the right
+                }
+                else
+                {
+                    spriteRenderer.flipX = false ; // Player is on the left
+                }
+            }
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && isVisible) // Check if Ivett is visible
+        if (collision.CompareTag("Player") && isVisible && !invulnerable) // Check if Ivett is visible and not invulnerable
         {
             Eletek playerHealth = collision.GetComponent<Eletek>();
             if (playerHealth != null)
@@ -74,7 +123,7 @@ public class Ivett : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && isVisible) // Check if Ivett is visible
+        if (collision.gameObject.CompareTag("Player") && isVisible && !invulnerable) // Check if Ivett is visible and not invulnerable
         {
             float playerYPosition = collision.transform.position.y;
             float ivettYPosition = transform.position.y;
@@ -97,7 +146,7 @@ public class Ivett : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (!isVisible) return; // Prevent damage if not visible
+        if (invulnerable) return; // If Ivett is invulnerable, prevent damage
 
         health -= damage;
         health = Mathf.Clamp(health, 0, maxHealth);
@@ -125,6 +174,51 @@ public class Ivett : MonoBehaviour
                 portalManager.ActivatePortal();
             }
         }
+        else
+        {
+            StartInvulnerability();
+        }
+    }
+
+    private void StartInvulnerability()
+    {
+        invulnerable = true;
+        if (nonTriggerCollider != null)
+        {
+            nonTriggerCollider.enabled = false; // Disable the non-trigger collider
+        }
+
+        if (invulnerabilityCoroutine != null)
+        {
+            StopCoroutine(invulnerabilityCoroutine);
+        }
+
+        invulnerabilityCoroutine = StartCoroutine(InvulnerabilityRoutine());
+    }
+
+    private IEnumerator InvulnerabilityRoutine()
+    {
+        float elapsed = 0f;
+        while (elapsed < 3f) // Duration of invulnerability
+        {
+            // Blink effect (make Ivett semi-transparent)
+            spriteRenderer.color = new Color(1, 1, 1, 0.1f);
+            yield return new WaitForSeconds(0.2f); // Half blink interval
+
+            spriteRenderer.color = Color.white; // Reset color
+            yield return new WaitForSeconds(0.2f); // Half blink interval
+
+            elapsed += 0.4f;
+        }
+
+        invulnerable = false;
+
+        if (nonTriggerCollider != null)
+        {
+            nonTriggerCollider.enabled = true; // Re-enable the non-trigger collider
+        }
+
+        spriteRenderer.color = Color.white; // Ensure the sprite is fully visible
     }
 
     // Coroutine for projectile spawning (if needed)
@@ -149,11 +243,36 @@ public class Ivett : MonoBehaviour
             GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
             Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
             Collider2D projectileCollider = projectile.GetComponent<Collider2D>();
+            SpriteRenderer projectileSprite = projectile.GetComponent<SpriteRenderer>();
 
             if (rb != null && projectileCollider != null)
             {
-                // Set projectile velocity
-                rb.velocity = Vector2.left * projectileSpeed;
+                // Calculate the direction towards the player
+                GameObject player = GameObject.FindWithTag("Player");
+                if (player != null)
+                {
+                    Vector2 directionToPlayer = player.transform.position - transform.position;
+                    directionToPlayer.Normalize(); // Normalize to get direction
+
+                    // Set projectile velocity based on direction
+                    rb.velocity = directionToPlayer * projectileSpeed;
+
+                    // Flip the projectile's sprite based on Ivett's facing direction
+                    if (spriteRenderer.flipX)
+                    {
+                        if (projectileSprite != null)
+                        {
+                            projectileSprite.flipX = true; // Flip the projectile to match Ivett's direction
+                        }
+                    }
+                    else
+                    {
+                        if (projectileSprite != null)
+                        {
+                            projectileSprite.flipX = false; // Keep the projectile facing right
+                        }
+                    }
+                }
 
                 // Set collider as a trigger so it doesn't collide with non-player objects
                 projectileCollider.isTrigger = true;
@@ -175,6 +294,12 @@ public class Ivett : MonoBehaviour
         {
             StopCoroutine(projectileSpawnCoroutine);
             projectileSpawnCoroutine = null;
+        }
+
+        if (invulnerabilityCoroutine != null)
+        {
+            StopCoroutine(invulnerabilityCoroutine);
+            invulnerabilityCoroutine = null;
         }
     }
 

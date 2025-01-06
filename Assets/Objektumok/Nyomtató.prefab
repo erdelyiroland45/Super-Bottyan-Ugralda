@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 2446867012541585556}
   - component: {fileID: 7983919593778555269}
   - component: {fileID: 8010716755586256955}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: "Nyomtat\xF3"
-  m_TagString: Solid
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

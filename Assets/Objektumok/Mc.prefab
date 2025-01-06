@@ -173,6 +173,7 @@ MonoBehaviour:
   maxElet: 3
   iframesduration: 1
   pirosanvillogas: 1
+  jumpBoostForce: 10
 --- !u!70 &3789156856212474776
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

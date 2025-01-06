@@ -19,6 +19,7 @@ public class Jatekosmozgas : MonoBehaviour
     [SerializeField] private Vector2 wallCheckOffset = new Vector2(0.5f, 0f);   // Offset for the wall check
 
     private Eletek eletek; // Reference to the Eletek script
+    private Transform platform;  // Reference to the platform the player is standing on
 
     void Start()
     {
@@ -38,10 +39,23 @@ public class Jatekosmozgas : MonoBehaviour
             return; // Prevent any further input or actions if the player is dead
         }
 
+        // Perform ground and wall checks
+        CheckGroundAndWall();
+
         // Horizontal movement
         float vizszintesMozgas = Input.GetAxis("Horizontal");
-        Vector2 mozgasiVektor = new Vector2(vizszintesMozgas * sebesseg, rb.velocity.y);
-        rb.velocity = mozgasiVektor;
+
+        // If the player is on a platform, move with the platform
+        if (platform != null)
+        {
+            // The platform's movement will move the player horizontally
+            rb.velocity = new Vector2(vizszintesMozgas * sebesseg + platform.GetComponent<Rigidbody2D>().velocity.x, rb.velocity.y);
+        }
+        else
+        {
+            // Normal movement without platform
+            rb.velocity = new Vector2(vizszintesMozgas * sebesseg, rb.velocity.y);
+        }
 
         // Update sprite direction
         if (vizszintesMozgas != 0)
@@ -58,15 +72,14 @@ public class Jatekosmozgas : MonoBehaviour
         // Update animator parameters
         animator.SetBool("Mozog", vizszintesMozgas != 0 && isGrounded);
 
-        // Perform ground and wall checks
-        CheckGroundAndWall();
+        // Update jump animation state
+        animator.SetBool("Ugrik", !isGrounded);
     }
 
     private void Jump()
     {
         rb.AddForce(Vector2.up * ugrasEro, ForceMode2D.Impulse);
         isGrounded = false;
-        animator.SetBool("Ugrik", true);
     }
 
     private void CheckGroundAndWall()
@@ -82,23 +95,29 @@ public class Jatekosmozgas : MonoBehaviour
         );
 
         isGrounded = groundHit.collider != null; // Set isGrounded to true if the BoxCast detects the ground
+    }
 
-        // Wall detection
-        Vector2 wallCheckDirection = spriteRenderer.flipX ? Vector2.right : Vector2.left;
-        Vector2 wallCheckPosition = (Vector2)transform.position + wallCheckOffset * (spriteRenderer.flipX ? 1 : -1);
-        RaycastHit2D wallHit = Physics2D.BoxCast(
-            wallCheckPosition,
-            wallCheckSize,
-            0f,
-            wallCheckDirection,
-            0f,
-            tilemapLayer
-        );
+    // This method is called when the player touches the platform
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            platform = collision.transform; // Set the platform as the player's parent
+            transform.SetParent(platform);  // Parent the player to the platform
 
-        isTouchingWall = wallHit.collider != null; // Set isTouchingWall to true if the BoxCast detects a wall
+            // Optional: you could adjust the player's position relative to the platform
+            // to make sure they stay on the platform properly.
+        }
+    }
 
-        // Update jump animation state
-        animator.SetBool("Ugrik", !isGrounded);
+    // This method is called when the player leaves the platform
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            platform = null; // Clear the reference to the platform
+            transform.SetParent(null);  // Remove the parent-child relationship
+        }
     }
 
     private void OnDrawGizmosSelected()
@@ -106,10 +125,5 @@ public class Jatekosmozgas : MonoBehaviour
         // Visualize ground check
         Gizmos.color = Color.green;
         Gizmos.DrawWireCube((Vector2)transform.position + groundCheckOffset, groundCheckSize);
-
-        // Visualize wall check
-        Gizmos.color = Color.blue;
-        Vector2 wallCheckPosition = (Vector2)transform.position + wallCheckOffset * (spriteRenderer != null && spriteRenderer.flipX ? 1 : -1);
-        Gizmos.DrawWireCube(wallCheckPosition, wallCheckSize);
     }
 }

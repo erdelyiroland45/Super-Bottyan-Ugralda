@@ -13,6 +13,7 @@ TagManager:
   - Fal
   - TalajFalKombo
   - AlloDiak
+  - Platform
   layers:
   - Default
   - TransparentFX

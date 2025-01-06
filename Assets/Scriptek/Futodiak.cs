@@ -4,17 +4,24 @@ public class Futodiak : MonoBehaviour
 {
     [SerializeField] private float sebzodes = 1f; // Damage amount to be applied to the player
     [SerializeField] private float speed = 3.0f; // Speed of the enemy movement
+    [SerializeField] private LayerMask tilemapLayer; // LayerMask for detecting walls and ground
+    [SerializeField] private Vector2 wallCheckSize = new Vector2(0.1f, 1f); // Size of the wall check box
+    [SerializeField] private Vector2 wallCheckOffset = new Vector2(0.5f, 0f); // Offset for the wall check
+    [SerializeField] private Vector2 groundCheckSize = new Vector2(0.5f, 0.1f); // Size of the ground check box
+    [SerializeField] private Vector2 groundCheckOffset = new Vector2(0f, -0.5f); // Offset for the ground check
+
     private Rigidbody2D rb; // Reference to the Rigidbody2D component
-    private Camera mainCamera; // Reference to the main camera
     private float movementDirection; // Stores the movement direction based on flip state
     private SpriteRenderer spriteRenderer; // Reference to the SpriteRenderer component
+    private bool isGrounded; // Tracks if the enemy is grounded
 
     private void Start()
     {
-        // Get the Rigidbody2D and SpriteRenderer components
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        mainCamera = Camera.main; // Get the main camera
+
+        // Set Rigidbody2D collision detection to Continuous
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
         // Determine initial movement direction based on the Flip X setting in SpriteRenderer
         movementDirection = spriteRenderer.flipX ? 1 : -1;
@@ -22,22 +29,68 @@ public class Futodiak : MonoBehaviour
 
     private void Update()
     {
-        // Move the enemy based on the determined direction
+        // Perform ground detection
+        CheckGround();
+
+        // Only modify the x velocity for movement, let Unity handle gravity
         rb.velocity = new Vector2(speed * movementDirection, rb.velocity.y);
 
-        // Check if the enemy has moved off the left or right side of the camera view
-        if (IsOutOfCameraView())
+        // Perform wall detection
+        if (IsTouchingWall())
         {
-            Destroy(gameObject); // Despawn the enemy if it's outside the camera view
+            ReverseDirection();
         }
     }
 
-    private bool IsOutOfCameraView()
+    private void CheckGround()
     {
-        // Get the enemy's position in screen coordinates
-        Vector3 screenPoint = mainCamera.WorldToViewportPoint(transform.position);
-        // Check if the enemy is outside the screen (viewport x < 0 or x > 1)
-        return screenPoint.x < 0 || screenPoint.x > 1;
+        // Determine ground check position
+        Vector2 groundCheckPosition = (Vector2)transform.position + groundCheckOffset;
+
+        // Perform a BoxCast to detect the ground
+        RaycastHit2D groundHit = Physics2D.BoxCast(
+            groundCheckPosition,
+            groundCheckSize,
+            0f,
+            Vector2.down, // Ensure we check downward for ground
+            0f,
+            tilemapLayer
+        );
+
+        // Set isGrounded to true if the BoxCast detects the ground
+        isGrounded = groundHit.collider != null;
+
+        // If grounded, stop falling, otherwise let gravity do its job
+        if (isGrounded && rb.velocity.y <= 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0); // Reset the vertical velocity
+        }
+    }
+
+    private bool IsTouchingWall()
+    {
+        // Adjust wallCheckOffset dynamically based on flipX
+        Vector2 wallCheckPosition = (Vector2)transform.position + wallCheckOffset * (spriteRenderer.flipX ? 1 : -1);
+
+        // Perform a BoxCast to detect walls
+        RaycastHit2D wallHit = Physics2D.BoxCast(
+            wallCheckPosition,
+            wallCheckSize,
+            0f,
+            Vector2.zero,
+            0f,
+            tilemapLayer
+        );
+
+        return wallHit.collider != null; // Return true if the BoxCast detects a wall
+    }
+
+    private void ReverseDirection()
+    {
+        // Reverse the movement direction
+        movementDirection *= -1;
+        // Flip the sprite horizontally
+        spriteRenderer.flipX = !spriteRenderer.flipX;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -53,5 +106,18 @@ public class Futodiak : MonoBehaviour
                 Debug.Log("Damage dealt to player: " + sebzodes); // Log for debugging
             }
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // Visualize wall check
+        Gizmos.color = Color.red;
+        Vector2 wallCheckPosition = (Vector2)transform.position + wallCheckOffset * (spriteRenderer != null && spriteRenderer.flipX ? 1 : -1);
+        Gizmos.DrawWireCube(wallCheckPosition, wallCheckSize);
+
+        // Visualize ground check
+        Gizmos.color = Color.green;
+        Vector2 groundCheckPosition = (Vector2)transform.position + groundCheckOffset;
+        Gizmos.DrawWireCube(groundCheckPosition, groundCheckSize);
     }
 }

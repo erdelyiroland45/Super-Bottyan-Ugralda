@@ -56,21 +56,22 @@ public class Eletek : MonoBehaviour
         }
     }
 
-    public void Sebzodes(float sebzes)
+public void Sebzodes(float sebzes)
+{
+    if (isDead || invulnerable) return;
+
+    Jelenlegielet = Mathf.Clamp(Jelenlegielet - sebzes, 0, maxElet);
+
+    if (Jelenlegielet > 0)
     {
-        if (isDead || invulnerable) return;
-
-        Jelenlegielet = Mathf.Clamp(Jelenlegielet - sebzes, 0, maxElet);
-
-        if (Jelenlegielet > 0)
-        {
-            StartCoroutine(Sebezhetetlenseg());
-        }
-        else
-        {
-            StartCoroutine(Die());
-        }
+        spriteRenderer.color = Color.red; // Change sprite to red on damage
+        StartCoroutine(Sebezhetetlenseg());
     }
+    else
+    {
+        StartCoroutine(Die());
+    }
+}
 
     private IEnumerator Die()
     {
@@ -92,23 +93,28 @@ public class Eletek : MonoBehaviour
         SceneManager.LoadScene("GameOver");
     }
 
-    private IEnumerator Sebezhetetlenseg()
+private IEnumerator Sebezhetetlenseg()
+{
+    invulnerable = true; // Set the player as invulnerable
+    Physics2D.IgnoreLayerCollision(6, 7, true); // Ignore collisions between the player and enemies
+
+    // Wait briefly to show the red color before blinking
+    yield return new WaitForSeconds(0.1f);
+
+    for (int i = 0; i < 3; i++) // Blink exactly 3 times
     {
-        invulnerable = true;
-        Physics2D.IgnoreLayerCollision(6, 7, true);
+        spriteRenderer.color = new Color(1, 1, 1, 0.1f); // Semi-transparent white
+        yield return new WaitForSeconds(iframesduration / 2);
 
-        for (int i = 0; i < pirosanvillogas; i++)
-        {
-            spriteRenderer.color = new Color(1, 0, 0, 0.5f);
-            yield return new WaitForSeconds(iframesduration);
-            spriteRenderer.color = Color.white;
-            yield return new WaitForSeconds(iframesduration);
-        }
-
-        Physics2D.IgnoreLayerCollision(6, 7, false);
-        yield return new WaitForSeconds(1f);
-        invulnerable = false;
+        spriteRenderer.color = Color.white; // Reset to full white
+        yield return new WaitForSeconds(iframesduration / 2);
     }
+
+    spriteRenderer.color = Color.white; // Ensure the sprite is fully visible and white
+    Physics2D.IgnoreLayerCollision(6, 7, false); // Re-enable collisions
+    invulnerable = false; // Reset invulnerability
+}
+
 
     private void IncreaseHealth(float amount)
     {

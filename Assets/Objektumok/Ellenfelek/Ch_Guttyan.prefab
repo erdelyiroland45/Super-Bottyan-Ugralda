@@ -41,9 +41,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3941494156665661824}
   - component: {fileID: 888745809202753859}
-  - component: {fileID: 7185620208633569244}
   - component: {fileID: 2136540951763059186}
   - component: {fileID: 6768305156918836208}
+  - component: {fileID: 3606244689030863037}
   m_Layer: 0
   m_Name: Ch_Guttyan
   m_TagString: Untagged
@@ -108,7 +108,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 08821f8b36b822043bb7050c071a9a01, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9b987925068ad674b86faa524764c082, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -119,26 +119,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &7185620208633569244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1670266717417528503}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 213949f5b7f2d4b42807631e0837b9a8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sebzodes: 1
-  headDamage: 1
-  healthBar: {fileID: 0}
-  projectileSpawnPoint: {fileID: 790786649359106576}
-  projectilePrefab: {fileID: 5954638883496819789, guid: 2492427b85a030c4ab4977c1e89696b3, type: 3}
-  fireRate: 1.5
-  projectileSpeed: 5
-  portalManager: {fileID: 0}
 --- !u!61 &2136540951763059186
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -229,3 +209,23 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.3751278, y: 0.890562}
   m_EdgeRadius: 0
+--- !u!114 &3606244689030863037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1670266717417528503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ac1e5ee76e12f7489bbe7dfb9923576, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sebzodes: 1
+  headDamage: 1
+  healthBar: {fileID: 0}
+  projectileSpawnPoint: {fileID: 790786649359106576}
+  projectilePrefab: {fileID: 5954638883496819789, guid: ceb3519fc565c3847be823023d971f30, type: 3}
+  fireRate: 1.5
+  projectileSpeed: 7
+  portalManager: {fileID: 0}

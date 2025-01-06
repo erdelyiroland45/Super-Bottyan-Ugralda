@@ -10,12 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 4944740056322897483}
   - component: {fileID: 1866107966453144070}
-  - component: {fileID: 5305805874587845125}
   - component: {fileID: 6149259275488184701}
   - component: {fileID: 4780246566008014793}
-  - component: {fileID: 2914439268625775424}
   - component: {fileID: 5006555393222667525}
-  m_Layer: 0
+  - component: {fileID: 8128308803434013592}
+  m_Layer: 7
   m_Name: Ch_Veszter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -91,33 +90,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &5305805874587845125
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 766178249271173629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbd094ef1e591f042bfd7f140446bc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sebzodes: 1
-  headDamage: 1
-  healthBar: {fileID: 0}
-  filamentPrefabs:
-  - {fileID: 3336119287467357195, guid: 4456be0ca1eb6f24a8b3ab70bae628b1, type: 3}
-  - {fileID: 3053050640701512866, guid: 1be14271a027e8848889eb5399cd69f4, type: 3}
-  - {fileID: 1013522602465136481, guid: c77619f1a781efb4bbfe9295dc7bfe1e, type: 3}
-  - {fileID: 3346732829739115682, guid: 0782b1000cb1e1f429bc97185d660516, type: 3}
-  spawnPoint: {fileID: 5426928533920225774}
-  "filamentdob\xE1shely": {fileID: 3721851895178048359}
-  spawnDelay: 3
-  projectilePrefab: {fileID: 6826027510551423697, guid: 071310d5e2108874a93db1bed8d5096a, type: 3}
-  projectileLaunchForce: 10
-  projectileInterval: 2
-  portalManager: {fileID: 0}
 --- !u!61 &6149259275488184701
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -150,7 +122,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.00000052154064, y: -0.22878115}
+  m_Offset: {x: 0.003122896, y: -0.15836604}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -161,7 +133,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.4293466, y: 0.82243764}
+  m_Size: {x: 0.25408748, y: 0.68160737}
   m_EdgeRadius: 0
 --- !u!61 &4780246566008014793
 BoxCollider2D:
@@ -195,7 +167,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0019250661, y: 0.109734595}
+  m_Offset: {x: 0.00085125864, y: 0.10177474}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -206,21 +178,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.22885889, y: 0.23655939}
+  m_Size: {x: 0.23890495, y: 0.22063968}
   m_EdgeRadius: 0
---- !u!114 &2914439268625775424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 766178249271173629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f3f6287f60691564a841368f124da8fc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  portal: {fileID: 0}
 --- !u!95 &5006555393222667525
 Animator:
   serializedVersion: 5
@@ -242,6 +201,36 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8128308803434013592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 766178249271173629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc5ac173b3074eb428a7002707285dd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sebzodes: 1
+  headDamage: 1
+  healthBar: {fileID: 0}
+  projectilePrefab: {fileID: 6826027510551423697, guid: 071310d5e2108874a93db1bed8d5096a, type: 3}
+  projectileLaunchForce: 10
+  spawnPoint: {fileID: 5426928533920225774}
+  filamentSpawnPoint: {fileID: 0}
+  filamentPrefabs:
+  - {fileID: 3346732829739115682, guid: 0782b1000cb1e1f429bc97185d660516, type: 3}
+  - {fileID: 1013522602465136481, guid: c77619f1a781efb4bbfe9295dc7bfe1e, type: 3}
+  - {fileID: 3053050640701512866, guid: 1be14271a027e8848889eb5399cd69f4, type: 3}
+  - {fileID: 3336119287467357195, guid: 4456be0ca1eb6f24a8b3ab70bae628b1, type: 3}
+  keySpawnPoint: {fileID: 0}
+  keyPrefab: {fileID: 7171898315615704209, guid: ff3d1fac586d55043be15cb79e349718, type: 3}
+  portalManager: {fileID: 0}
+  spawnDelay: 3
+  invulnerabilityDuration: 3
+  blinkInterval: 0.2
 --- !u!1 &1616610825243122900
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,7 +256,7 @@ Transform:
   m_GameObject: {fileID: 1616610825243122900}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.049, y: -0.22, z: -0.0319614}
+  m_LocalPosition: {x: -0.024, y: -0.06, z: -0.0319614}
   m_LocalScale: {x: 0.38551855, y: 0.38551855, z: 0.38551855}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -298,7 +287,7 @@ Transform:
   m_GameObject: {fileID: 4109054899021667662}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.354, y: -0.443, z: -0.0319614}
+  m_LocalPosition: {x: -0.028, y: -0.151, z: -0.0319614}
   m_LocalScale: {x: 0.38551855, y: 0.38551855, z: 0.38551855}
   m_ConstrainProportionsScale: 0
   m_Children: []

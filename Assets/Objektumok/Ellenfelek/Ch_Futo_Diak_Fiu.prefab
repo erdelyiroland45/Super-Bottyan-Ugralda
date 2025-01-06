@@ -14,11 +14,11 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 0b9bb12a580bb354690bae39277d9e46, type: 2}
     - target: {fileID: 1544440229273704939, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.59
+      value: -18.8
       objectReference: {fileID: 0}
     - target: {fileID: 1544440229273704939, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -8.49
+      value: -8.7
       objectReference: {fileID: 0}
     - target: {fileID: 1544440229273704939, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -60,8 +60,85 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ch_Futo_Diak_Fiu
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 4946450043779795265, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: wallCheckSize.y
+      value: 1.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946450043779795265, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: groundCheckSize.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946450043779795265, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: groundCheckSize.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946450043779795265, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: wallCheckOffset.x
+      value: 0.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946450043779795265, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: wallCheckOffset.y
+      value: 0.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946450043779795265, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: groundCheckOffset.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946450043779795265, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: groundCheckOffset.y
+      value: -1.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 8082388951020490644, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 2445142216158948125, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+    - {fileID: 465906803069174050, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2032774576256189388, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 234938101598307720}
   m_SourcePrefab: {fileID: 100100000, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+--- !u!1 &372712080246379849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2032774576256189388, guid: 6792e4a216e0d8c4785a72ad96b309f0, type: 3}
+  m_PrefabInstance: {fileID: 1808756127830578821}
+  m_PrefabAsset: {fileID: 0}
+--- !u!58 &234938101598307720
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372712080246379849}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0105878925, y: -0.43892673}
+  serializedVersion: 2
+  m_Radius: 0.028519679
