@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Jatekosmozgas : MonoBehaviour
 {
@@ -29,6 +30,26 @@ public class Jatekosmozgas : MonoBehaviour
         eletek = GetComponent<Eletek>(); // Get the Eletek component
 
         animator.SetBool("Halott", false);
+
+        // Set the initial position as a checkpoint if no checkpoint is set
+        if (CheckpointManager.Instance != null)
+        {
+            CheckpointManager.Instance.SetInitialCheckpoint(transform.position, SceneManager.GetActiveScene().name);
+        }
+
+        // Respawn at the last checkpoint if available
+        if (CheckpointManager.Instance != null && CheckpointManager.Instance.LastSceneName == SceneManager.GetActiveScene().name)
+        {
+            transform.position = CheckpointManager.Instance.LastCheckpointPosition;
+        }
+        else
+        {
+            // Update the checkpoint to the player's initial position in the new level
+            if (CheckpointManager.Instance != null)
+            {
+                CheckpointManager.Instance.SetCheckpoint(transform.position, SceneManager.GetActiveScene().name);
+            }
+        }
     }
 
     void Update()

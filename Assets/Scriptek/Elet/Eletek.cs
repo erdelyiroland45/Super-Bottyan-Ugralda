@@ -90,7 +90,16 @@ public void Sebzodes(float sebzes)
 
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length + 3f);
 
+        // Reload the current scene
         SceneManager.LoadScene("GameOver");
+    }
+
+    private void OnEnable()
+    {
+        // Re-enable colliders and reset states when the player is enabled
+        isDead = false;
+        Physics2D.IgnoreLayerCollision(gameObject.layer, LayerMask.NameToLayer("Enemy"), false);
+        animator.SetBool("Halott", false);
     }
 
 private IEnumerator Sebezhetetlenseg()
