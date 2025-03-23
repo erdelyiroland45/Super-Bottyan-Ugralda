@@ -27,7 +27,7 @@ public class Kulcsajto : MonoBehaviour
     {
         if (hasKey)
         {
-            SceneManager.LoadScene("M_epulet 2"); // Load the new scene
+            SceneManager.LoadScene("B_Epulet"); // Load the new scene
         }
         else
         {
