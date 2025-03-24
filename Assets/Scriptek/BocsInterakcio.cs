@@ -73,7 +73,7 @@ public class BocsInterakcio : MonoBehaviour
         // Check if the Bocs UI is visible by checking if it is active in the scene
         if (bocsUI != null && bocsUI.activeSelf)
         {
-            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape)) // Check for E or Esc key press
+            if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton2)) // Check for E or Esc key press
             {
                 Debug.Log("Player pressed E or Escape, hiding Bocs UI and unfreezing the game.");
                 HideBocsUI(); // Hide the UI

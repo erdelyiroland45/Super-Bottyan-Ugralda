@@ -17,7 +17,7 @@ public class Kulcsajto : MonoBehaviour
     private void Update()
     {
         // Handle door interaction
-        if (isDoorInRange && Input.GetKeyDown(KeyCode.E))
+        if (isDoorInRange && Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.JoystickButton2))
         {
             TryOpenDoor();
         }

@@ -85,7 +85,7 @@ public class Jatekosmozgas : MonoBehaviour
         }
 
         // Jump: Only allow jumping when grounded
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded)
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.JoystickButton0)) && isGrounded)
         {
             Jump();
         }

@@ -17,7 +17,7 @@ public class Bolt : MonoBehaviour
     private void Update()
     {
         // Toggle shop UI if player presses "E" while in range
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerInRange && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.JoystickButton2)))
         {
             ToggleShop();
         }
